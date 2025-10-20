@@ -1,27 +1,16 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Virtual Environment
+.venv
+venv/
+env/
 
-# dependencies
-/node_modules
+# Python cache
+__pycache__/
+*.pyc
 
-# next.js
-/.next/
-/out/
+# Sensitive environment variable files
+.env
 
-# production
-/build
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files
-.env*
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store

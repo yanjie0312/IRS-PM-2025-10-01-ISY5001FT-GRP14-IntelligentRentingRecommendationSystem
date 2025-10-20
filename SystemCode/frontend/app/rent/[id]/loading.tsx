@@ -5,7 +5,7 @@ export default function Loading() {
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center space-y-4">
         <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
-        <p className="text-muted-foreground">加载房源详情中...</p>
+        <p className="text-muted-foreground">Loading property details...</p>
       </div>
     </div>
   )

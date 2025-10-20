@@ -101,24 +101,19 @@ export interface FormData {
   max_monthly_rent: number
   school_id: number
   target_district_id?: number
-  max_school_distance?: number
+  max_school_limit?: number // Maximum acceptable commute time to school in minutes
   flat_type_preference?: string[]
   max_mrt_distance?: number
   importance_rent?: number
   importance_location?: number
   importance_facility?: number
+  device_id?: string
 }
 
 export interface DescriptionInput {
   description: string
 }
 
-// Comment submission interface
-export interface CommentData {
-  recomm_idx: string | number
-  comment: string
-  rating?: number
-}
 
 export interface MapData {
   html: string
@@ -144,8 +139,7 @@ export const api = {
       params: { property_id: propertyId, latitude, longitude },
     }),
 
-  // Submit comment
-  submitComment: (data: CommentData) => apiClient.post("/api/comment", data),
+
 }
 
 export default apiClient

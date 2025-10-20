@@ -67,14 +67,14 @@ export default function RentBlock({ property }: RentBlockProps) {
 
         <div className="flex items-baseline gap-2">
           <span className="text-2xl font-bold text-primary">{property.price}</span>
-          <span className="text-sm text-muted-foreground">/月</span>
+          <span className="text-sm text-muted-foreground">/month</span>
         </div>
 
         <div className="grid grid-cols-2 gap-3 pt-2 border-t">
           <div className="space-y-1">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <School className="h-3.5 w-3.5" />
-              <span>距学校</span>
+              <span>To School</span>
             </div>
             <p className="text-sm font-medium">{property.distance_to_school}m</p>
           </div>
@@ -82,7 +82,7 @@ export default function RentBlock({ property }: RentBlockProps) {
           <div className="space-y-1">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Train className="h-3.5 w-3.5" />
-              <span>距地铁</span>
+              <span>To MRT</span>
             </div>
             <p className="text-sm font-medium">{property.distance_to_mrt}m</p>
           </div>
@@ -90,7 +90,7 @@ export default function RentBlock({ property }: RentBlockProps) {
 
         {property.public_facilities && property.public_facilities.length > 0 && (
           <div className="pt-2 border-t">
-            <p className="text-xs text-muted-foreground mb-2">附近设施</p>
+            <p className="text-xs text-muted-foreground mb-2">Nearby Facilities</p>
             <div className="flex flex-wrap gap-1">
               {property.public_facilities.slice(0, 3).map((facility, index) => (
                 <Badge key={index} variant="outline" className="text-xs">
@@ -114,10 +114,10 @@ export default function RentBlock({ property }: RentBlockProps) {
       <CardFooter className="p-4 pt-0 flex gap-2">
         <Button variant="outline" size="sm" className="flex-1 bg-transparent" onClick={handleViewMap}>
           <MapPin className="h-4 w-4 mr-1.5" />
-          查看地图
+          View Map
         </Button>
         <Button size="sm" className="flex-1" onClick={handleCardClick}>
-          查看详情
+          View Details
           <ExternalLink className="h-4 w-4 ml-1.5" />
         </Button>
       </CardFooter>

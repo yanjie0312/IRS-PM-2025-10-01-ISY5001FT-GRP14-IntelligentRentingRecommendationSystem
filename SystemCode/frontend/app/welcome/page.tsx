@@ -21,11 +21,12 @@ export default function WelcomePage() {
             <div className="space-y-8 text-center lg:text-left">
               <div className="space-y-4">
                 <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-balance leading-tight">
-                  找到你的
-                  <span className="text-primary block mt-2">理想住所</span>
+                  Find Your
+                  <span className="text-primary block mt-2">Ideal Home</span>
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground text-pretty max-w-2xl mx-auto lg:mx-0">
-                  智能推荐系统帮您快速找到最适合的租房选择，让找房变得简单高效
+                  Our intelligent recommendation system helps you quickly find the most suitable rental options, making
+                  house hunting simple and efficient
                 </p>
               </div>
 
@@ -36,7 +37,7 @@ export default function WelcomePage() {
                   className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all"
                 >
                   <Home className="mr-2 h-5 w-5" />
-                  开始找房
+                  Start Searching
                 </Button>
                 <Button
                   size="lg"
@@ -44,7 +45,7 @@ export default function WelcomePage() {
                   onClick={() => router.push("/recomm")}
                   className="text-lg px-8 py-6"
                 >
-                  浏览推荐
+                  Browse Recommendations
                 </Button>
               </div>
 
@@ -52,15 +53,15 @@ export default function WelcomePage() {
               <div className="grid grid-cols-3 gap-4 pt-8 border-t border-border">
                 <div className="text-center lg:text-left">
                   <div className="text-2xl md:text-3xl font-bold text-primary">1000+</div>
-                  <div className="text-sm text-muted-foreground">优质房源</div>
+                  <div className="text-sm text-muted-foreground">Quality Properties</div>
                 </div>
                 <div className="text-center lg:text-left">
                   <div className="text-2xl md:text-3xl font-bold text-primary">95%</div>
-                  <div className="text-sm text-muted-foreground">满意度</div>
+                  <div className="text-sm text-muted-foreground">Satisfaction</div>
                 </div>
                 <div className="text-center lg:text-left">
                   <div className="text-2xl md:text-3xl font-bold text-primary">24h</div>
-                  <div className="text-sm text-muted-foreground">快速响应</div>
+                  <div className="text-sm text-muted-foreground">Quick Response</div>
                 </div>
               </div>
             </div>
@@ -83,8 +84,8 @@ export default function WelcomePage() {
                     <Shield className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <div className="font-semibold">安全保障</div>
-                    <div className="text-sm text-muted-foreground">实名认证</div>
+                    <div className="font-semibold">Safety Guarantee</div>
+                    <div className="text-sm text-muted-foreground">Verified Identity</div>
                   </div>
                 </div>
               </div>
@@ -95,8 +96,8 @@ export default function WelcomePage() {
                     <TrendingUp className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <div className="font-semibold">智能匹配</div>
-                    <div className="text-sm text-muted-foreground">AI推荐</div>
+                    <div className="font-semibold">Smart Matching</div>
+                    <div className="text-sm text-muted-foreground">AI Recommendations</div>
                   </div>
                 </div>
               </div>
@@ -113,9 +114,10 @@ export default function WelcomePage() {
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4">为什么选择 HouseFinder</h2>
+            <h2 className="font-serif text-3xl md:text-4xl font-bold mb-4">Why Choose HouseFinder</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              我们提供最专业的租房服务，让您的找房之旅更加轻松愉快
+              We provide the most professional rental services to make your house hunting journey easier and more
+              enjoyable
             </p>
           </div>
 
@@ -124,9 +126,10 @@ export default function WelcomePage() {
               <div className="h-14 w-14 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
                 <MapPin className="h-7 w-7 text-primary" />
               </div>
-              <h3 className="font-semibold text-xl mb-3">精准定位</h3>
+              <h3 className="font-semibold text-xl mb-3">Precise Location</h3>
               <p className="text-muted-foreground leading-relaxed">
-                根据您的工作地点、学校位置等需求，智能推荐最合适的房源位置
+                Based on your workplace, school location and other needs, we intelligently recommend the most suitable
+                property locations
               </p>
             </div>
 
@@ -134,9 +137,9 @@ export default function WelcomePage() {
               <div className="h-14 w-14 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
                 <Shield className="h-7 w-7 text-primary" />
               </div>
-              <h3 className="font-semibold text-xl mb-3">安全可靠</h3>
+              <h3 className="font-semibold text-xl mb-3">Safe & Reliable</h3>
               <p className="text-muted-foreground leading-relaxed">
-                所有房源经过严格审核，房东实名认证，保障您的租房安全
+                All properties are strictly verified, landlords are identity-verified, ensuring your rental safety
               </p>
             </div>
 
@@ -144,9 +147,10 @@ export default function WelcomePage() {
               <div className="h-14 w-14 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
                 <TrendingUp className="h-7 w-7 text-primary" />
               </div>
-              <h3 className="font-semibold text-xl mb-3">智能推荐</h3>
+              <h3 className="font-semibold text-xl mb-3">Smart Recommendations</h3>
               <p className="text-muted-foreground leading-relaxed">
-                AI算法分析您的需求，为您推荐最匹配的房源，节省找房时间
+                AI algorithms analyze your needs and recommend the most matching properties, saving you time in house
+                hunting
               </p>
             </div>
           </div>

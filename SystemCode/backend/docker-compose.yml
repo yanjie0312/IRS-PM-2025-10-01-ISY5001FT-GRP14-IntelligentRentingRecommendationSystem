@@ -1,0 +1,50 @@
+services:
+
+  # PostgreSQL -- database
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: ${DB_NAME:-irrs_dev}
+      POSTGRES_USER: ${DB_USER:-yilin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-qiyilin710}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-yilin}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # pgAdmin -- database management tool
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-yilin.qi@u.nus.edu}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-qiyilin710}
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # FastAPI - backend app
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-yilin}:${DB_PASSWORD:-qiyilin710}@postgres:5432/${DB_NAME:-irrs_dev}
+    volumes:
+      - .:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      postgres:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+
+volumes:
+  postgres_data:

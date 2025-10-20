@@ -1,0 +1,10 @@
+# web framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0.post1
+
+# database
+sqlmodel==0.0.14
+psycopg2-binary==2.9.9
+
+# env config
+python-dotenv==1.0.0

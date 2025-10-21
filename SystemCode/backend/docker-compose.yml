@@ -17,6 +17,14 @@ services:
       timeout: 5s
       retries: 5
 
+  # redis -- cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
   # pgAdmin -- database management tool
   pgadmin:
     image: dpage/pgadmin4
@@ -47,3 +55,4 @@ services:
 
 volumes:
   postgres_data:
+  redis_data:

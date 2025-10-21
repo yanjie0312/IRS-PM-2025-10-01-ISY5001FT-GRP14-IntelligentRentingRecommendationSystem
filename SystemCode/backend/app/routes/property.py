@@ -5,6 +5,7 @@ from sqlmodel import Session
 from app.database.config import get_session
 from app.models import EnquiryForm, EnquiryNL, PropertyLocation, RecommendationResponse
 from app.utils import mock_data, mock_map
+from app.handlers import property_handler
 
 router = APIRouter(prefix="/api/v1/properties", tags=["properties"])
 
@@ -21,7 +22,7 @@ def submit_form(
     if MOCK_MODE:
         return mock_data.create_mock_response()
     else:
-        pass
+        return property_handler.submit_form_handler(db=db, enquiry=enquiry)
 
 
 # 提交文字表单
@@ -34,30 +35,25 @@ def submit_description(
     if MOCK_MODE:
         return mock_data.create_mock_response()
     else:
-        pass
+        return property_handler.submit_description_handler(db=db, enquiry=enquiry)
 
 
 # 获取无表单房源推荐列表
-@router.get("/recommendation-no-submit", response_model=RecommendationResponse, status_code=status.HTTP_201_CREATED)
+@router.get("/recommendation-no-submit", response_model=RecommendationResponse, status_code=status.HTTP_200_OK)
 def recommendation_no_submit(
     *,
     db: Session = Depends(get_session),
 ):
-    if MOCK_MODE:
-        return mock_data.create_mock_response()
-    else:
-        pass
-
+    return RecommendationResponse(properties=[])
 
 # 获取房源地图
 @router.post("/map", response_class=HTMLResponse, status_code=status.HTTP_201_CREATED)
 def map(
     *,
-    db: Session = Depends(get_session),
     location: PropertyLocation
 ):
     if MOCK_MODE:
         return HTMLResponse(content=mock_map.create_mock_response())
     else:
-        pass 
+        return property_handler.map_handler(location=location) 
 

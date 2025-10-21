@@ -8,3 +8,6 @@ psycopg2-binary==2.9.9
 
 # env config
 python-dotenv==1.0.0
+
+# cache
+redis==5.0.1

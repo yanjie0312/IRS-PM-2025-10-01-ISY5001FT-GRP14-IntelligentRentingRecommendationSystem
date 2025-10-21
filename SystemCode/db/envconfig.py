@@ -25,7 +25,7 @@ def get_openmap_token():
     token = os.getenv('OPEN_MAP_TOKEN')
     return url_first, url_second, url_routing, token
 
-def get_openmap_library_url():
+def get_openmap_library_url(): # 查询图书馆信息用
     current_dir = os.path.dirname(os.path.abspath(__file__))
     env_path = os.path.join(current_dir, '.env.openmap')
     load_dotenv(env_path)

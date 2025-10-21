@@ -182,9 +182,7 @@ export default function UserInputPage() {
     }))
   }
 
-  // ----------------------------------------------------------------------
-  // Modifications start here
-  // ----------------------------------------------------------------------
+
 
   const handleOptionalSelectChange = (key: keyof FormData, value: string) => {
     setFormData((prev) => {
@@ -213,9 +211,6 @@ export default function UserInputPage() {
     })
   }
 
-  // ----------------------------------------------------------------------
-  // JSX changes below: Target District Select
-  // ----------------------------------------------------------------------
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50/30 via-background to-blue-50/20 py-12 px-4">

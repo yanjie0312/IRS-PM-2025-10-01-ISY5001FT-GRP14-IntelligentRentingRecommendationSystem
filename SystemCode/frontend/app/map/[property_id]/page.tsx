@@ -41,7 +41,7 @@ export default function MapPage() {
           longitude 
         })
         
-        // 直接传递字符串参数，保持精度
+
         const response = await api.getPropertyMap(
           Number(propertyId), 
           latitude,
@@ -69,7 +69,7 @@ export default function MapPage() {
         setMapHtml(FALLBACK_MAP_HTML)
         setUsingFallback(true)
         
-        // 更详细的错误信息
+
         if (err.response?.status === 404) {
           setError("Map endpoint not found (404). The API may not support this property or the endpoint is incorrect.")
         } else if (err.name === "NetworkError") {

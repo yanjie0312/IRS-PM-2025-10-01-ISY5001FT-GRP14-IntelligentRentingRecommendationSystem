@@ -44,7 +44,6 @@ export default function RentDetailPage() {
         setLoading(true)
         setError(null)
 
-        // 方法1: 尝试从 history state 获取
         const historyState = (window.history.state as any)?.state
 
         if (historyState?.property) {
@@ -55,7 +54,7 @@ export default function RentDetailPage() {
           return
         }
 
-        // 方法2: 尝试从 localStorage 获取推荐列表中的数据
+
         const savedData = localStorage.getItem('recommendations_data')
         if (savedData) {
           try {
@@ -76,7 +75,7 @@ export default function RentDetailPage() {
           }
         }
 
-        // 方法3: 调用 API 获取单个属性详情
+
         console.log("[v0] Fetching property from API, id:", id)
         const response = await api.getPropertyDetail(Number(id))
 
@@ -101,7 +100,7 @@ export default function RentDetailPage() {
 
     const fetchMap = async (propertyData: Property) => {
       try {
-        // 直接使用原始值，转换为字符串
+
         const lat = String(propertyData.latitude)
         const lng = String(propertyData.longitude)
 
@@ -113,7 +112,7 @@ export default function RentDetailPage() {
           lngType: typeof lng
         })
 
-        // 直接传递字符串参数
+
         const mapResponse = await api.getPropertyMap(
           propertyData.property_id,
           lat,
@@ -357,7 +356,7 @@ export default function RentDetailPage() {
                     className="w-full bg-transparent"
                     size="lg"
                     onClick={() => {
-                      // 直接使用字符串格式的坐标
+
                       const lat = String(property.latitude)
                       const lng = String(property.longitude)
                       window.open(`/map/${property.property_id}?lat=${lat}&lng=${lng}`, "_blank")

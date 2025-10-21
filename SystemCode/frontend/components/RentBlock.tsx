@@ -9,6 +9,7 @@ import { MapPin, School, Train, Star, ExternalLink } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import type { Property } from "@/lib/api"
+import { toNumber } from "@/lib/utils/decimal"
 
 interface RentBlockProps {
   property: Property
@@ -23,7 +24,9 @@ export default function RentBlock({ property }: RentBlockProps) {
 
   const handleViewMap = (e: React.MouseEvent) => {
     e.stopPropagation()
-    window.open(`/map/${property.property_id}?lat=${property.latitude}&lng=${property.longitude}`, "_blank")
+    const lat = toNumber(property.latitude)
+    const lng = toNumber(property.longitude)
+    window.open(`/map/${property.property_id}?lat=${lat}&lng=${lng}`, "_blank")
   }
 
   const renderStars = (count: number) => {
@@ -76,7 +79,7 @@ export default function RentBlock({ property }: RentBlockProps) {
               <School className="h-3.5 w-3.5" />
               <span>To School</span>
             </div>
-            <p className="text-sm font-medium">{property.distance_to_school}m</p>
+            <p className="text-sm font-medium">{property.time_to_school}m</p>
           </div>
 
           <div className="space-y-1">

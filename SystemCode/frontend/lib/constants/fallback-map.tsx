@@ -35,7 +35,7 @@ export const FALLBACK_MAP_HTML = `
     }).addTo(map);
     
     var marker = L.marker([1.3521, 103.8198]).addTo(map);
-    marker.bindPopup("<b>Singapore Central Area</b><br>Default Location").openPopup();
+    marker.bindPopup("<b>Singapore Central Area</b><br>").openPopup();
   </script>
 </body>
 </html>

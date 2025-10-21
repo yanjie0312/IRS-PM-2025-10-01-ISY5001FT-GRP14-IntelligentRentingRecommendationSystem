@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { api, type Property, type RecommendationsResponse } from "@/lib/api"
+import { type Property, type RecommendationsResponse } from "@/lib/api"
 import RentBlock from "@/components/RentBlock"
 import { Loader2, Home, AlertCircle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
 
 export default function RecommendationsPage() {
   const router = useRouter()
@@ -20,21 +21,26 @@ export default function RecommendationsPage() {
         setLoading(true)
         setError(null)
 
-        const historyState = (window.history.state as any)?.state
+        // Read from localStorage
+        const savedData = localStorage.getItem('recommendations_data')
 
-        if (historyState?.properties) {
-          const data: RecommendationsResponse = historyState.properties
-          setProperties(data.properties)
-          setTotalCount(data.total_count)
+        if (savedData) {
+          const data: RecommendationsResponse = JSON.parse(savedData)
+          setProperties(data?.properties || [])
+          setTotalCount(data?.total_count || 0)
+
+          // 不要删除数据，保留以便刷新页面时仍可使用
+          // localStorage.removeItem('recommendations_data')
         } else {
-          const response = await api.getRecommendationsWithoutSubmit()
-          const data: RecommendationsResponse = response.data
-          setProperties(data.properties)
-          setTotalCount(data.total_count)
+          setError("No recommendations available. Please submit your requirements first.")
+          setProperties([])
+          setTotalCount(0)
         }
       } catch (err: any) {
         console.error("[v0] Failed to fetch recommendations:", err)
         setError(err.response?.data?.message || "Failed to fetch recommended properties, please try again later")
+        setProperties([])
+        setTotalCount(0)
       } finally {
         setLoading(false)
       }
@@ -57,11 +63,19 @@ export default function RecommendationsPage() {
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 p-4">
-        <Alert variant="destructive" className="max-w-md">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Loading Failed</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
+        <div className="max-w-md space-y-4">
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>No Recommendations Available</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+          <Button
+            onClick={() => router.push("/")}
+            className="w-full"
+          >
+            Go to Home Page
+          </Button>
+        </div>
       </div>
     )
   }

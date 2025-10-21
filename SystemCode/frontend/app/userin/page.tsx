@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -22,6 +22,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 
 const FLAT_TYPES = ["HDB", "Condo", "Landed", "Apartment", "Executive Condo"]
 
+const FORM_DATA_KEY = "housefinder_form_data"
+const NLP_INPUT_KEY = "housefinder_nlp_input"
+
 export default function UserInputPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -32,7 +35,7 @@ export default function UserInputPage() {
     max_monthly_rent: 0,
     school_id: 0,
     target_district_id: undefined,
-    max_school_limit: undefined, // Changed from max_school_distance
+    max_school_limit: undefined,
     flat_type_preference: [],
     max_mrt_distance: undefined,
     importance_rent: 3,
@@ -43,6 +46,23 @@ export default function UserInputPage() {
   const [nlpInput, setNlpInput] = useState("")
   const [nlpError, setNlpError] = useState(false)
   const maxChars = 500
+
+  useEffect(() => {
+    try {
+      const savedFormData = localStorage.getItem(FORM_DATA_KEY)
+      if (savedFormData) {
+        const parsed = JSON.parse(savedFormData)
+        setFormData(parsed)
+      }
+
+      const savedNlpInput = localStorage.getItem(NLP_INPUT_KEY)
+      if (savedNlpInput) {
+        setNlpInput(savedNlpInput)
+      }
+    } catch (error) {
+      console.error("Failed to load saved form data:", error)
+    }
+  }, [])
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -69,11 +89,29 @@ export default function UserInputPage() {
         ...formData,
         device_id: getDeviceId(),
       }
+      // Fixed: Use submitForm instead of submitDescription
       const response = await api.submitForm(submitData)
-      router.push("/recomm", { state: { properties: response.data } } as any)
+
+      // Save form data for next time (optional)
+      localStorage.setItem(FORM_DATA_KEY, JSON.stringify(formData))
+
+      // Store recommendations data for the recommendations page
+      localStorage.setItem('recommendations_data', JSON.stringify(response.data))
+
+      console.log('[v0] Stored recommendations in localStorage:', response.data)
+      router.push("/recomm")
     } catch (error: any) {
       console.error("Failed to submit form:", error)
-      alert(error.message || "Submission failed, please try again")
+      const errorMessage =
+        error.name === "NetworkError"
+          ? "Unable to connect to the server. This appears to be a network or CORS issue. Please check:\n\n" +
+          "1. The backend server is running and accessible\n" +
+          "2. CORS is properly configured on the backend\n" +
+          "3. Your internet connection is stable\n\n" +
+          "Technical details: " +
+          error.message
+          : error.message || "Submission failed, please try again"
+      alert(errorMessage)
     } finally {
       setIsSubmitting(false)
     }
@@ -96,13 +134,30 @@ export default function UserInputPage() {
 
     try {
       const response = await api.submitDescription(nlpInput)
-      router.push("/recomm", { state: { properties: response.data } } as any)
+
+      // Save NLP input for next time (optional)
+      localStorage.setItem(NLP_INPUT_KEY, nlpInput)
+
+      // Store recommendations data for the recommendations page
+      localStorage.setItem('recommendations_data', JSON.stringify(response.data))
+
+      console.log('[v0] Stored recommendations in localStorage:', response.data)
+      router.push("/recomm")
     } catch (error: any) {
       console.error("Failed to submit NLP input:", error)
       if (error.code === 40003) {
         setNlpError(true)
       }
-      alert(error.message || "Submission failed, please try again")
+      const errorMessage =
+        error.name === "NetworkError"
+          ? "Unable to connect to the server. This appears to be a network or CORS issue. Please check:\n\n" +
+          "1. The backend server is running and accessible\n" +
+          "2. CORS is properly configured on the backend\n" +
+          "3. Your internet connection is stable\n\n" +
+          "Technical details: " +
+          error.message
+          : error.message || "Submission failed, please try again"
+      alert(errorMessage)
     } finally {
       setIsSubmitting(false)
     }
@@ -137,7 +192,6 @@ export default function UserInputPage() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Form Mode */}
           <TabsContent value="form">
             <form onSubmit={handleFormSubmit}>
               <div className="space-y-6">
@@ -334,7 +388,6 @@ export default function UserInputPage() {
                   </CardContent>
                 </Card>
 
-                {/* Submit Button */}
                 <Button
                   type="submit"
                   size="lg"

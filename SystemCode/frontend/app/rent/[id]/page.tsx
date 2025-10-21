@@ -25,6 +25,8 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { FALLBACK_MAP_HTML } from "@/lib/constants/fallback-map"
+import { toNumber } from "@/lib/utils/decimal"
+import Decimal from "decimal.js"
 
 export default function RentDetailPage() {
   const params = useParams()
@@ -37,41 +39,112 @@ export default function RentDetailPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const historyState = (window.history.state as any)?.state
+    const fetchPropertyData = async () => {
+      try {
+        setLoading(true)
+        setError(null)
 
-    if (historyState?.property) {
-      setProperty(historyState.property)
-      setLoading(false)
+        // 方法1: 尝试从 history state 获取
+        const historyState = (window.history.state as any)?.state
 
-      // Fetch map HTML using the new API
-      const fetchMap = async () => {
-        try {
-          const mapResponse = await api.getPropertyMap(
-            historyState.property.property_id,
-            historyState.property.latitude,
-            historyState.property.longitude,
-          )
-          if (mapResponse.data && mapResponse.data.html) {
-            setMapHtml(mapResponse.data.html)
-          } else {
-            setMapHtml(FALLBACK_MAP_HTML)
+        if (historyState?.property) {
+          console.log("[v0] Property data from history state:", historyState.property)
+          setProperty(historyState.property)
+          await fetchMap(historyState.property)
+          setLoading(false)
+          return
+        }
+
+        // 方法2: 尝试从 localStorage 获取推荐列表中的数据
+        const savedData = localStorage.getItem('recommendations_data')
+        if (savedData) {
+          try {
+            const data = JSON.parse(savedData)
+            const foundProperty = data.properties?.find(
+              (p: Property) => p.property_id === Number(id)
+            )
+
+            if (foundProperty) {
+              console.log("[v0] Property data from localStorage:", foundProperty)
+              setProperty(foundProperty)
+              await fetchMap(foundProperty)
+              setLoading(false)
+              return
+            }
+          } catch (parseErr) {
+            console.error("[v0] Error parsing localStorage data:", parseErr)
           }
-        } catch (mapErr) {
-          console.error("[v0] Error fetching map HTML:", mapErr)
+        }
+
+        // 方法3: 调用 API 获取单个属性详情
+        console.log("[v0] Fetching property from API, id:", id)
+        const response = await api.getPropertyDetail(Number(id))
+
+        if (response.data) {
+          console.log("[v0] Property data from API:", response.data)
+          setProperty(response.data)
+          await fetchMap(response.data)
+        } else {
+          throw new Error("Property not found")
+        }
+
+      } catch (err: any) {
+        console.error("[v0] Error fetching property:", err)
+        setError(
+          err.message ||
+          "Failed to load property details. Please try again or return to recommendations."
+        )
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    const fetchMap = async (propertyData: Property) => {
+      try {
+        // 直接使用原始值，转换为字符串
+        const lat = String(propertyData.latitude)
+        const lng = String(propertyData.longitude)
+
+        console.log("[v0] Fetching map with coordinates:", {
+          propertyId: propertyData.property_id,
+          lat,
+          lng,
+          latType: typeof lat,
+          lngType: typeof lng
+        })
+
+        // 直接传递字符串参数
+        const mapResponse = await api.getPropertyMap(
+          propertyData.property_id,
+          lat,
+          lng
+        )
+
+        if (mapResponse.data && mapResponse.data.html) {
+          console.log("[v0] Map HTML received successfully")
+          setMapHtml(mapResponse.data.html)
+        } else {
+          console.log("[v0] No map HTML returned, using fallback")
           setMapHtml(FALLBACK_MAP_HTML)
         }
+      } catch (mapErr: any) {
+        console.error("[v0] Error fetching map HTML:", {
+          message: mapErr.message,
+          status: mapErr.response?.status,
+          data: mapErr.response?.data
+        })
+        setMapHtml(FALLBACK_MAP_HTML)
       }
-      fetchMap()
-    } else {
-      // No property data in state, redirect to recommendations
-      setError("Please access property details from the recommendations list")
-      setLoading(false)
+    }
+
+    if (id) {
+      fetchPropertyData()
     }
   }, [id])
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50/50 to-background">
         <div className="text-center space-y-4">
           <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
           <p className="text-muted-foreground">Loading property details...</p>
@@ -82,16 +155,23 @@ export default function RentDetailPage() {
 
   if (error || !property) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-blue-50/50 to-background">
         <div className="max-w-md w-full space-y-4">
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error || "Property does not exist"}</AlertDescription>
+            <AlertDescription>
+              {error || "Property not found. It may have been removed or the ID is invalid."}
+            </AlertDescription>
           </Alert>
-          <Button onClick={() => router.push("/recomm")} className="w-full">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Recommendations
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => router.push("/recomm")} className="flex-1">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Recommendations
+            </Button>
+            <Button onClick={() => router.push("/")} variant="outline" className="flex-1">
+              Go Home
+            </Button>
+          </div>
         </div>
       </div>
     )
@@ -116,9 +196,11 @@ export default function RentDetailPage() {
                   className="object-cover"
                   priority
                 />
-                <Badge className="absolute top-4 right-4 bg-primary text-primary-foreground text-base px-4 py-2">
-                  {property.facility_type}
-                </Badge>
+                {property.facility_type && (
+                  <Badge className="absolute top-4 right-4 bg-primary text-primary-foreground text-base px-4 py-2">
+                    {property.facility_type}
+                  </Badge>
+                )}
               </div>
             </Card>
 
@@ -133,7 +215,7 @@ export default function RentDetailPage() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-3xl font-bold text-primary">{property.price}</div>
+                    <div className="text-3xl font-bold text-primary">${property.price}</div>
                     <div className="text-sm text-muted-foreground">Per Month</div>
                   </div>
                 </div>
@@ -190,7 +272,7 @@ export default function RentDetailPage() {
                       <School className="h-4 w-4 text-primary" />
                       <div>
                         <span className="text-sm text-muted-foreground">To School:</span>
-                        <span className="font-medium ml-2">{property.distance_to_school}m</span>
+                        <span className="font-medium ml-2">{property.time_to_school}min</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -256,27 +338,13 @@ export default function RentDetailPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-muted-foreground leading-relaxed">{property.recommend_reason}</p>
+                <p className="text-muted-foreground leading-relaxed">
+                  {property.recommend_reason || "This property matches your requirements."}
+                </p>
                 <Separator />
                 <div className="space-y-3">
-                  <Button className="w-full" size="lg">
-                    Contact Landlord
-                  </Button>
                   <Button
                     variant="outline"
-                    className="w-full bg-transparent"
-                    size="lg"
-                    onClick={() =>
-                      window.open(
-                        `/map/${property.property_id}?lat=${property.latitude}&lng=${property.longitude}`,
-                        "_blank",
-                      )
-                    }
-                  >
-                    <MapPin className="h-4 w-4 mr-2" />
-                    View Map in New Window
-                  </Button>
-                  <Button
                     className="w-full"
                     size="lg"
                     onClick={() => window.open("https://www.propertyguru.com.sg/property-for-rent", "_blank")}
@@ -284,6 +352,21 @@ export default function RentDetailPage() {
                     <ArrowUpRight className="h-4 w-4 mr-2" />
                     View on PropertyGuru
                   </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full bg-transparent"
+                    size="lg"
+                    onClick={() => {
+                      // 直接使用字符串格式的坐标
+                      const lat = String(property.latitude)
+                      const lng = String(property.longitude)
+                      window.open(`/map/${property.property_id}?lat=${lat}&lng=${lng}`, "_blank")
+                    }}
+                  >
+                    <MapPin className="h-4 w-4 mr-2" />
+                    View Map in New Window
+                  </Button>
+
                 </div>
               </CardContent>
             </Card>

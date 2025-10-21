@@ -24,7 +24,7 @@ export default function MapPage() {
   useEffect(() => {
     const fetchMapData = async () => {
       if (!propertyId || !latitude || !longitude) {
-        setError("Missing required map parameters")
+        setError("Missing required map parameters (property_id, lat, lng)")
         setLoading(false)
         setMapHtml(FALLBACK_MAP_HTML)
         setUsingFallback(true)
@@ -34,20 +34,49 @@ export default function MapPage() {
       try {
         setLoading(true)
         setError(null)
-        const response = await api.getPropertyMap(Number(propertyId), Number(latitude), Number(longitude))
+        
+        console.log("[v0] Fetching map with params:", { 
+          propertyId, 
+          latitude, 
+          longitude 
+        })
+        
+        // 直接传递字符串参数，保持精度
+        const response = await api.getPropertyMap(
+          Number(propertyId), 
+          latitude,
+          longitude
+        )
+        
         if (response.data && response.data.html) {
+          console.log("[v0] Map HTML received successfully")
           setMapHtml(response.data.html)
           setUsingFallback(false)
         } else {
-          // Use fallback if no HTML returned
+          console.warn("[v0] No map HTML in response, using fallback")
           setMapHtml(FALLBACK_MAP_HTML)
           setUsingFallback(true)
+          setError("Map data not available from server")
         }
       } catch (err: any) {
-        console.error("[v0] Error fetching map data:", err)
+        console.error("[v0] Error fetching map data:", {
+          message: err.message,
+          status: err.response?.status,
+          statusText: err.response?.statusText,
+          data: err.response?.data
+        })
+        
         setMapHtml(FALLBACK_MAP_HTML)
         setUsingFallback(true)
-        setError("Unable to load property map, showing default Singapore location")
+        
+        // 更详细的错误信息
+        if (err.response?.status === 404) {
+          setError("Map endpoint not found (404). The API may not support this property or the endpoint is incorrect.")
+        } else if (err.name === "NetworkError") {
+          setError("Network error: Unable to connect to map service")
+        } else {
+          setError(`Unable to load property map: ${err.message || "Unknown error"}`)
+        }
       } finally {
         setLoading(false)
       }
@@ -58,7 +87,7 @@ export default function MapPage() {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-4">
           <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto" />
           <p className="text-muted-foreground">Loading map...</p>
@@ -68,13 +97,24 @@ export default function MapPage() {
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col bg-background">
       {/* Header */}
       <div className="bg-card border-b border-border p-4 shadow-sm">
         <div className="container mx-auto flex items-center justify-between">
           <div className="space-y-1">
-            <h1 className="text-xl font-semibold text-foreground">Property Map</h1>
-            {usingFallback && <p className="text-sm text-muted-foreground">Showing default Singapore location</p>}
+            <h1 className="text-xl font-semibold text-foreground">
+              Property Map {propertyId && `#${propertyId}`}
+            </h1>
+            {usingFallback && (
+              <p className="text-sm text-amber-600">
+                ⚠️ Using default Singapore location
+              </p>
+            )}
+            {latitude && longitude && (
+              <p className="text-xs text-muted-foreground">
+                Coordinates: {latitude}, {longitude}
+              </p>
+            )}
           </div>
           <Button variant="outline" onClick={() => window.close()}>
             Close
@@ -82,16 +122,18 @@ export default function MapPage() {
         </div>
       </div>
 
-      {error && usingFallback && (
+      {/* Error Alert */}
+      {error && (
         <div className="container mx-auto px-4 pt-4">
-          <Alert>
+          <Alert variant={usingFallback ? "default" : "destructive"}>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         </div>
       )}
 
-      <div className="flex-1">
+      {/* Map Container */}
+      <div className="flex-1 overflow-hidden">
         <iframe
           srcDoc={mapHtml}
           className="w-full h-full border-0"

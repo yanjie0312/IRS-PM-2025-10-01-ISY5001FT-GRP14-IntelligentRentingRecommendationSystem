@@ -220,3 +220,4 @@ __marimo__/
 SystemCode/DataScript/
 SystemCode/db/.env.googlecloudservice
 SystemCode/db/compact-harbor-475309-h1-7ac990971da7.json
+SystemCode/db/.env.openmap

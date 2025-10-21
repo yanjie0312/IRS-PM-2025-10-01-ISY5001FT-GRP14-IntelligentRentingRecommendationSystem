@@ -2,7 +2,7 @@ import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios"
 import type Decimal from "decimal.js"
 import { convertPropertiesCoordinates } from "./utils/decimal"
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://vault-arbitration-incentive-sharp.trycloudflare.com"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"
 
 // Create axios instance with default configuration
 const apiClient: AxiosInstance = axios.create({

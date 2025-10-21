@@ -20,7 +20,7 @@ class PropertyCore(PropertyBase):
     area: Optional[int] = Field(default=None)
     build_time: Optional[str] = Field(default=None, max_length=50)
     location: Optional[str] = Field(default=None, max_length=100)
-    distance_to_school: Optional[int] = Field(default=None)
+    time_to_school: Optional[int] = Field(default=None)
     distance_to_mrt: Optional[int] = Field(default=None)
     public_facilities: Optional[dict] = Field(default=None)
     facility_type: Optional[str] = Field(default=None, max_length=50)

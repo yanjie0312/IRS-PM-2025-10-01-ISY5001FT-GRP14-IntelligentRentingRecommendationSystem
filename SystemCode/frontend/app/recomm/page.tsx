@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { type Property, type RecommendationsResponse } from "@/lib/api"
+// 确保从 api.ts 导入 api 对象
+import { type Property, type RecommendationsResponse, api } from "@/lib/api" // <-- 假设 api.ts 路径是 @/lib/api
 import RentBlock from "@/components/RentBlock"
 import { Loader2, Home, AlertCircle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -23,22 +24,48 @@ export default function RecommendationsPage() {
 
         // Read from localStorage
         const savedData = localStorage.getItem('recommendations_data')
+        let data: RecommendationsResponse | null = null
 
         if (savedData) {
-          const data: RecommendationsResponse = JSON.parse(savedData)
-          setProperties(data?.properties || [])
-          setTotalCount(data?.total_count || 0)
+          // 尝试解析 localStorage 中的数据
+          try {
+            data = JSON.parse(savedData)
+            console.log("[v0] Loaded recommendations from localStorage.")
+          } catch (e) {
+            console.warn("[v0] Failed to parse localStorage data, treating as missing.", e)
+            data = null // 解析失败，视为数据不存在
+          }
+        }
 
-          // 不要删除数据，保留以便刷新页面时仍可使用
-          // localStorage.removeItem('recommendations_data')
+        if (data && data.properties && data.properties.length > 0) {
+          // **情况 1: 从 localStorage 读取数据成功**
+          setProperties(data.properties || [])
+          setTotalCount(data.total_count || 0)
         } else {
-          setError("No recommendations available. Please submit your requirements first.")
-          setProperties([])
-          setTotalCount(0)
+          // **情况 2: localStorage 数据不存在或无效，调用默认推荐 API**
+          console.log("[v0] No valid recommendations in localStorage, fetching default recommendations...")
+          const response = await api.getRecommendationsNoSubmit() // 调用新的 API
+          const apiData = response.data
+
+          if (apiData && apiData.properties) {
+            setProperties(apiData.properties)
+            setTotalCount(apiData.total_count)
+          } else {
+            // API 返回数据结构异常
+            throw new Error("API returned no properties.")
+          }
         }
       } catch (err: any) {
+        // 捕获所有错误（包括 API 错误和 JSON 解析错误）
         console.error("[v0] Failed to fetch recommendations:", err)
-        setError(err.response?.data?.message || "Failed to fetch recommended properties, please try again later")
+
+        // 尝试从 API 错误对象中提取 message，否则使用通用错误信息
+        const errorMessage =
+          err.message ||
+          err.response?.data?.message ||
+          "Failed to fetch recommended properties, please try again later."
+
+        setError(errorMessage)
         setProperties([])
         setTotalCount(0)
       } finally {
@@ -49,6 +76,7 @@ export default function RecommendationsPage() {
     fetchRecommendations()
   }, [])
 
+  // ... (剩余的渲染逻辑保持不变)
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50">

@@ -24,6 +24,8 @@ const FLAT_TYPES = ["HDB", "Condo", "Landed", "Apartment", "Executive Condo"]
 
 const FORM_DATA_KEY = "housefinder_form_data"
 const NLP_INPUT_KEY = "housefinder_nlp_input"
+// Define a constant for clearing select fields
+const CLEAR_SELECT_VALUE = "0"
 
 export default function UserInputPage() {
   const router = useRouter()
@@ -52,7 +54,15 @@ export default function UserInputPage() {
       const savedFormData = localStorage.getItem(FORM_DATA_KEY)
       if (savedFormData) {
         const parsed = JSON.parse(savedFormData)
-        setFormData(parsed)
+        // Ensure saved school_id is a number or 0, for the required field
+        // Set optional fields to undefined if they were null or 0, to match initial state logic
+        setFormData({
+          ...parsed,
+          school_id: Number(parsed.school_id) || 0,
+          target_district_id: parsed.target_district_id ? Number(parsed.target_district_id) : undefined,
+          max_school_limit: parsed.max_school_limit ? Number(parsed.max_school_limit) : undefined,
+          max_mrt_distance: parsed.max_mrt_distance ? Number(parsed.max_mrt_distance) : undefined,
+        })
       }
 
       const savedNlpInput = localStorage.getItem(NLP_INPUT_KEY)
@@ -172,6 +182,41 @@ export default function UserInputPage() {
     }))
   }
 
+  // ----------------------------------------------------------------------
+  // Modifications start here
+  // ----------------------------------------------------------------------
+
+  const handleOptionalSelectChange = (key: keyof FormData, value: string) => {
+    setFormData((prev) => {
+      const newValue = value === CLEAR_SELECT_VALUE ? undefined : Number(value)
+      return {
+        ...prev,
+        [key]: newValue,
+      }
+    })
+  }
+
+  // Helper function to convert number or undefined to string for Input value prop
+  const numberToInputString = (value: number | undefined): string => {
+    return value === undefined || value === 0 ? "" : String(value)
+  }
+
+  // Centralized handler for optional number inputs
+  const handleOptionalNumberChange = (key: keyof FormData, value: string) => {
+    setFormData((prev) => {
+      const numberValue = Number(value)
+      const newValue = value.trim() === "" || numberValue <= 0 ? undefined : numberValue
+      return {
+        ...prev,
+        [key]: newValue,
+      }
+    })
+  }
+
+  // ----------------------------------------------------------------------
+  // JSX changes below: Target District Select
+  // ----------------------------------------------------------------------
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50/30 via-background to-blue-50/20 py-12 px-4">
       <div className="max-w-4xl mx-auto">
@@ -265,12 +310,12 @@ export default function UserInputPage() {
                         Target School <span className="text-red-500">*</span>
                       </Label>
                       <Select
-                        value={formData.school_id?.toString() || ""}
+                        value={formData.school_id && formData.school_id > 0 ? formData.school_id.toString() : ""}
                         onValueChange={(value) => setFormData({ ...formData, school_id: Number(value) })}
                         required
                       >
                         <SelectTrigger id="school" className="h-11">
-                          <SelectValue placeholder="Please select target school" className="text-muted-foreground" />
+                          <SelectValue placeholder="Select School" />
                         </SelectTrigger>
                         <SelectContent>
                           {SCHOOLS.map((school) => (
@@ -286,15 +331,20 @@ export default function UserInputPage() {
                         Target District (Optional)
                       </Label>
                       <Select
-                        value={formData.target_district_id?.toString() || ""}
+                        // Use the CLEAR_SELECT_VALUE if target_district_id is undefined
+                        value={formData.target_district_id?.toString() || CLEAR_SELECT_VALUE}
                         onValueChange={(value) =>
-                          setFormData({ ...formData, target_district_id: value ? Number(value) : undefined })
+                          handleOptionalSelectChange("target_district_id", value)
                         }
                       >
                         <SelectTrigger id="district" className="h-11">
                           <SelectValue placeholder="Select district (optional)" />
                         </SelectTrigger>
                         <SelectContent>
+                          {/* Added 'Clear Selection' item at the top */}
+                          <SelectItem value={CLEAR_SELECT_VALUE}>
+                            No Preference / Clear Selection
+                          </SelectItem>
                           {DISTRICTS.map((district) => (
                             <SelectItem key={district.id} value={district.id.toString()}>
                               {district.name}
@@ -312,12 +362,10 @@ export default function UserInputPage() {
                           id="school_limit"
                           type="number"
                           placeholder="e.g.: 30 (means 30 minutes)"
-                          value={formData.max_school_limit || ""}
+                          // Use numberToInputString helper
+                          value={numberToInputString(formData.max_school_limit)}
                           onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              max_school_limit: e.target.value ? Number(e.target.value) : undefined,
-                            })
+                            handleOptionalNumberChange("max_school_limit", e.target.value)
                           }
                           className="h-11"
                           min={0}
@@ -331,12 +379,10 @@ export default function UserInputPage() {
                           id="mrt_distance"
                           type="number"
                           placeholder="e.g.: 500"
-                          value={formData.max_mrt_distance || ""}
+                          // Use numberToInputString helper
+                          value={numberToInputString(formData.max_mrt_distance)}
                           onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              max_mrt_distance: e.target.value ? Number(e.target.value) : undefined,
-                            })
+                            handleOptionalNumberChange("max_mrt_distance", e.target.value)
                           }
                           className="h-11"
                           min={0}
@@ -491,3 +537,4 @@ export default function UserInputPage() {
     </div>
   )
 }
+

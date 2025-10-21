@@ -1,14 +1,19 @@
+import openai
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.database.config import create_db_and_tables
 from app.routes.property import router as property_router
 from fastapi.middleware.cors import CORSMiddleware
+from app.config import settings
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
     create_db_and_tables()
+    app.state.openai_client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
+
     yield
+
     # Shutdown
 
 app = FastAPI(

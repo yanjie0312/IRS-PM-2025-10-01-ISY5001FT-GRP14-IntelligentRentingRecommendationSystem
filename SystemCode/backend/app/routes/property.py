@@ -1,15 +1,18 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.responses import HTMLResponse
 from sqlmodel import Session
+import openai
 
-from app.database.config import get_session
+from app.dependencies import get_session
+from app.dependencies import get_openai_client
 from app.models import EnquiryForm, EnquiryNL, PropertyLocation, RecommendationResponse
 from app.utils import mock_data, mock_map
 from app.handlers import property_handler
 
+
 router = APIRouter(prefix="/api/v1/properties", tags=["properties"])
 
-MOCK_MODE = True
+MOCK_MODE = False
 
 
 # 提交问卷表单
@@ -30,12 +33,13 @@ def submit_form(
 def submit_description(
     *,
     db: Session = Depends(get_session),
+    client: openai.OpenAI = Depends(get_openai_client),
     enquiry: EnquiryNL
 ):
     if MOCK_MODE:
         return mock_data.create_mock_response()
     else:
-        return property_handler.submit_description_handler(db=db, enquiry=enquiry)
+        return property_handler.submit_description_handler(db=db, client=client, enquiry=enquiry)
 
 
 # 获取无表单房源推荐列表
@@ -45,6 +49,7 @@ def recommendation_no_submit(
     db: Session = Depends(get_session),
 ):
     return RecommendationResponse(properties=[])
+
 
 # 获取房源地图
 @router.post("/map", response_class=HTMLResponse, status_code=status.HTTP_201_CREATED)

@@ -16,9 +16,9 @@ class EnquiryBase(SQLModel):
     max_school_limit: Optional[int] = Field(default=None)
     flat_type_preference: Optional[List[str]] = Field(default=None)
     max_mrt_distance: Optional[int] = Field(default=None)
-    importance_rent: int = Field(default=5)
-    importance_location: int = Field(default=5)
-    importance_facility: int = Field(default=5)
+    importance_rent: int = Field(default=3)
+    importance_location: int = Field(default=3)
+    importance_facility: int = Field(default=3)
     
 
 class EnquiryCore(EnquiryBase):

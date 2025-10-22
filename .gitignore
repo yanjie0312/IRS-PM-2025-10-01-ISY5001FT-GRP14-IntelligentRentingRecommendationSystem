@@ -216,6 +216,7 @@ __marimo__/
 
 .env
 .db
-SystemCode/DataScript/
-SystemCode/db/.env.googlecloudservice
-SystemCode/db/compact-harbor-475309-h1-7ac990971da7.json
+
+SystemCode/dataservice/db/.env.googlecloudservice
+SystemCode/dataservice/db/.env.openmap
+SystemCode/dataservice/db/compact-harbor-475309-h1-7ac990971da7.json

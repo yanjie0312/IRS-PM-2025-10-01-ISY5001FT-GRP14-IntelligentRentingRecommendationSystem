@@ -4,17 +4,23 @@ from sqlalchemy.future import select
 from sqlalchemy import func
 import asyncio
 from math import isnan
+import time
 import sys, os
 from api_model import RequestInfo, ResultInfo
-from SystemCode.db.model import HousingData, District, University, CommuteTime, Park, HawkerCenter, Supermarket, Library, ImageRecord
 
 current_dir = os.path.dirname(__file__) 
 project_root = os.path.abspath(os.path.join(current_dir, '..', '..')) 
 sys.path.insert(0, project_root) 
-from SystemCode.db.envconfig import get_database_url
+from SystemCode.db.model import HousingData, District, University, CommuteTime, Park, HawkerCenter, Supermarket, Library, ImageRecord
+from SystemCode.db.envconfig import get_database_url_async
 
-DATABASE_URL = get_database_url()
-async_engine = create_async_engine(DATABASE_URL, echo=False)
+DATABASE_URL = get_database_url_async()
+async_engine = create_async_engine(
+    DATABASE_URL, 
+    echo=False,
+    pool_size=20,
+    max_overflow=10,
+    pool_timeout=30)
 
 AsyncSessionLocal = sessionmaker(
     bind=async_engine, class_=AsyncSession, expire_on_commit=False
@@ -52,6 +58,7 @@ async def query_housing_data_async(request: RequestInfo) -> list[HousingData]:
         result = await session.execute(stmt)
         housings = result.scalars().all()
 
+        print(f"初步过滤得到{len(housings)}条房源记录。")
         # 若结果少于2条，补充通勤时间最短的10条（不重复）
         if len(housings) < 2:
             existing_ids = [h.id for h in housings]
@@ -69,9 +76,10 @@ async def query_housing_data_async(request: RequestInfo) -> list[HousingData]:
 
             fallback_result = await session.execute(fallback_stmt)
             fallback_housings = fallback_result.scalars().all()
+            print(f"补充了{len(fallback_housings)}条房源记录以满足最小数量要求。")
             housings.extend(fallback_housings)
 
-        return result.scalars().all()
+        return housings
 
 async def filter_housing_async(housings: list[HousingData], request: RequestInfo):
     '''根据 RequestInfo 对所有房源进行过滤并计算评分'''
@@ -81,68 +89,91 @@ async def filter_housing_async(housings: list[HousingData], request: RequestInfo
         raw_data = []
         radius_m = 2000
 
-        for housing in housings:
-            district = await session.get(District, housing.district_id)
+        housing_ids = [h.id for h in housings]
+        district_ids = list({h.district_id for h in housings if h.district_id})
+        
+        # 批量取 District
+        district_map = {
+            d.id: d for d in (
+                await session.execute(select(District).where(District.id.in_(district_ids)))
+            ).scalars().all()
+        }
+        
+        # 批量取 Image
+        image_map = {
+            i.id: i.public_url for i in (
+                await session.execute(select(ImageRecord.id, ImageRecord.public_url)
+                                    .where(ImageRecord.id.in_(housing_ids)))
+            ).all()
+        }
+        
+        # 批量取 Commute
+        commute_map = {
+            c.housing_id: c.commute_time_minutes for c in (
+                await session.execute(
+                    select(CommuteTime.housing_id, CommuteTime.commute_time_minutes)
+                    .where(CommuteTime.housing_id.in_(housing_ids),
+                        CommuteTime.university_id == request.school_id)
+                )
+            ).all()
+        }
+
+        async def process_housing(housing: HousingData):
+            district = district_map.get(housing.district_id)
             district_safety_score = district.safety_score if district else 0.0
+            district_name = district.district_name if district else ""
 
-            # 房源图片
-            img = await session.execute(
-                select(ImageRecord.public_url).where(ImageRecord.id == housing.id)
-            )
-            img_url = img.scalar()
+            img_url = image_map.get(housing.id)
+            commute_time = commute_map.get(housing.id)
 
-            # 通勤时间
-            commute_stmt = select(CommuteTime.commute_time_minutes).where(
-                CommuteTime.housing_id == housing.id,
-                CommuteTime.university_id == request.school_id
-            )
-            commute_time = (await session.scalar(commute_stmt)) or None
-
-            # 并发查询最近的公共设施
-            async def nearest_facility(facility_closest, label: str):
+            
+            # 并发查询最近的公共设施（单个房源内）
+            async def nearest_facility(model):
                 stmt = (
                     select(
-                        facility_closest.name,
-                        func.ST_Distance(facility_closest.geog, housing.geog).label("distance")
+                        model.name,
+                        func.ST_Distance(model.geog, housing.geog).label("distance")
                     )
-                    .where(func.ST_DWithin(facility_closest.geog, housing.geog, radius_m))
+                    .where(func.ST_DWithin(model.geog, housing.geog, radius_m))
                     .order_by("distance")
                     .limit(1)
                 )
                 row = await session.execute(stmt)
                 result = row.first()
                 if result:
-                    return {
-                        "name": result[0],
-                        "distance": round(float(result[1]), 1)
-                    }
+                    return {"name": result[0], "distance": str(int(float(result[1])))}
                 return None
 
-            park_task = nearest_facility(Park, "Park")
-            hawker_task = nearest_facility(HawkerCenter, "Hawker Center")
-            library_task = nearest_facility(Library, "Library")
-            supermarket_task = nearest_facility(Supermarket, "Supermarket")
-
-            nearest_facilities = [
-                res for res in await asyncio.gather(
-                    park_task, hawker_task, library_task, supermarket_task
-                ) if res
-            ]
+            facilities = await asyncio.gather(
+                nearest_facility(Park),
+                nearest_facility(HawkerCenter),
+                nearest_facility(Library),
+                nearest_facility(Supermarket)
+            )
+            nearest_facilities = [f for f in facilities if f]
 
             # 根据设施数量评分
             facility_score = len(nearest_facilities)
 
             # 原始数据
-            raw_data.append({
+            return{
                 "housing": housing,
                 "img": img_url,
                 "price": housing.price or 0,
                 "commute": commute_time or 9999,
                 "facility": facility_score,
                 "safety": district_safety_score or 0,
-                "district": district.district_name,
+                "district": district_name,
                 "public_facilities": nearest_facilities
-            })
+            }
+        
+        start_time = time.time()
+
+        tasks = [process_housing(h) for h in housings]
+        raw_data = await asyncio.gather(*tasks)
+        
+        execution_time = time.time() - start_time
+        print(f'查询时间: {execution_time:.2f} 秒')
 
         # === 归一化函数 ===
         def normalize(values, reverse=False):

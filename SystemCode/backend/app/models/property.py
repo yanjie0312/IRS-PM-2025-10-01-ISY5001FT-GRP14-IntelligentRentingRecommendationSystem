@@ -28,7 +28,7 @@ class PropertyCore(PropertyBase):
 
 # 返回给前端房源模型
 class PropertyRecommand(PropertyCore):
-    recommand_reason: Optional[str] = Field(default=None, max_length=500)
+    recommend_reason: Optional[str] = Field(default=None, max_length=500)
 
 
 # 算法返回房源模型

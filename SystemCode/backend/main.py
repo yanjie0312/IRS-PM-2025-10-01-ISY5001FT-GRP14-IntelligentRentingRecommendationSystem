@@ -9,12 +9,14 @@ from app.config import settings
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    create_db_and_tables()
-    app.state.openai_client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
+    await create_db_and_tables()
+    app.state.async_openai_client = openai.AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
 
     yield
 
     # Shutdown
+    await app.state.async_openai_client.close()
+
 
 app = FastAPI(
     title="IRRS API",

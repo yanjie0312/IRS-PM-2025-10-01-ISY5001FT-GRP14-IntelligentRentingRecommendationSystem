@@ -32,7 +32,7 @@ class PropertyRecommand(PropertyCore):
 
 
 # 算法返回房源模型
-class ResultInfo(PropertyCore):
+class ResultInfo(PropertyRecommand):
     costScore: float # range(0, 1]
     commuteScore: float # range(0, 1]
     neighborhoodScore: float # range(0, 1]

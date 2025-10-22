@@ -1,6 +1,5 @@
 from typing import List
 import openai
-import asyncio
 from fastapi import status, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import ValidationError
@@ -10,7 +9,6 @@ from app.models import EnquiryForm, EnquiryNL, PropertyLocation, Property, Recom
 from app.services import recommendation_service as rec_service
 from app.services import map_service as map_service
 from app.llm import service as llm_service
-from app.utils import mock_data
 
 
 async def submit_form_handler(
@@ -20,24 +18,21 @@ async def submit_form_handler(
     enquiry: EnquiryForm
 ) -> RecommendationResponse:
 
-    # # save to db
-    # await rec_service.save_form_to_DB(db=db, enquiry=enquiry)
+    # save to db
+    await rec_service.save_form_to_DB(db=db, enquiry=enquiry)
 
-    # # get TopN recommendation
-    # properties = await rec_service.fetchRecommendProperties(enquiry)
+    # get TopN recommendation
+    properties = await rec_service.fetchRecommendProperties(enquiry)
 
-    # # multi-objective optimization ranking
-    # ranked_properties: List[Property] = await rec_service.multi_objective_optimization_ranking(properties)
-
-
-    ranked_properties = mock_data.create_mock_properties_without_explanations_with_scores()
+    # multi-objective optimization ranking
+    ranked_properties: List[Property] = await rec_service.multi_objective_optimization_ranking(properties)
 
     # LLM generate natural language reason for recommendation
     top_k_with_explanations = await llm_service.generate_explanation_for_top_properties(
         enquiry=enquiry,
         ranked_properties=ranked_properties,
         client=client,
-        k = 3
+        k = 10
     )
 
     # save recommendation result

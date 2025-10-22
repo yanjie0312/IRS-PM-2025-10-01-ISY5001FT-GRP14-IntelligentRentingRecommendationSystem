@@ -5,7 +5,7 @@ from pydantic import computed_field
 from sqlalchemy import JSON, Column, DateTime, func
 from sqlmodel import Field, Relationship, SQLModel
 
-from .property import PropertyRecommand
+from .property import Property
 if TYPE_CHECKING:
     from .enquiry import EnquiryEntity
 
@@ -31,10 +31,9 @@ class Recommendation(SQLModel, table=True):
 
 # 返回给前端的推荐结果模型
 class RecommendationResponse(SQLModel):
-    properties: List[PropertyRecommand]
+    properties: List[Property]
 
     @computed_field
     @property
     def total_count(self) -> int:
         return len(self.properties)
-    

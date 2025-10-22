@@ -1,12 +1,20 @@
 from typing import List
 from decimal import Decimal
 
-from app.models import RecommendationResponse, PropertyRecommand
+from app.models import RecommendationResponse, Property
 
 
 def create_mock_response() -> RecommendationResponse:
-    mock_properties: List[PropertyRecommand] = [
-        PropertyRecommand(
+    mock_properties: List[Property] = create_mock_properties_with_explanations()
+
+    mock_response = RecommendationResponse(properties=mock_properties)
+
+    return mock_response
+
+
+def create_mock_properties_with_explanations() -> List[Property]:
+    return [
+        Property(
             property_id=101,
             img_src="https://images.unsplash.com/photo-1615874959474-d609969a20ed?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
             name="The Sail @ Marina Bay",
@@ -23,7 +31,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.8545"),
             recommand_reason="Fantastic central location, close to the metro, convenient living.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=102,
             img_src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
             name="Parc Esta",
@@ -40,7 +48,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.8824"),
             recommand_reason="New development with great facilities, near MRT and amenities.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=103,
             img_src="https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
             name="The Tre Ver",
@@ -57,7 +65,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.8689"),
             recommand_reason="Spacious layout with balcony, close to city and transportation.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=104,
             img_src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
             name="Jadescape",
@@ -74,7 +82,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.8387"),
             recommand_reason="Family-friendly with good schools nearby, modern amenities.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=105,
             img_src="https://plus.unsplash.com/premium_photo-1674676471081-0236e34485fd?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
             name="Stirling Residences",
@@ -91,7 +99,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.8054"),
             recommand_reason="High floor with city view, walking distance to MRT and mall.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=106,
             img_src="https://media.istockphoto.com/id/2159352100/photo/digitally-generated-image-of-old-style-bedroom-with-access-to-balcony.webp?a=1&b=1&s=612x612&w=0&k=20&c=vgblBzchRrnSO-0yRFc2EPBKiHQ_HJC9hh5Stmjj3ps=",
             name="The Florence Residences",
@@ -108,7 +116,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.8932"),
             recommand_reason="Affordable family living with pool and gym facilities.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=107,
             img_src="https://media.istockphoto.com/id/2155899923/photo/well-furnished-bedroom-in-a-new-construction-home-in-encino-california.webp?a=1&b=1&s=612x612&w=0&k=20&c=LAoVG8V-fi2mfwMmAfHmd-ES2mtRyjee7Xa-OOS5MoA=",
             name="Midtown Modern",
@@ -125,7 +133,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.8552"),
             recommand_reason="Luxury living in heart of city, integrated with mall and MRT.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=108,
             img_src="https://images.unsplash.com/photo-1505692795793-20f543407193?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTZ8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
             name="Kopar at Newton",
@@ -142,7 +150,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.8398"),
             recommand_reason="Premium location near Orchard Road, high-end finishes throughout.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=109,
             img_src="https://images.unsplash.com/photo-1600054648630-e10e710825f6?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTl8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
             name="Normanton Park",
@@ -159,7 +167,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.7756"),
             recommand_reason="Close to science park and universities, great for professionals.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=110,
             img_src="https://images.unsplash.com/photo-1632210702485-e1841e30752a?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTh8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
             name="Clavon",
@@ -176,7 +184,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.7642"),
             recommand_reason="Near NUS and good schools, modern design with quality finishes.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=111,
             img_src="https://plus.unsplash.com/premium_photo-1661962495669-d72424626bdc?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjF8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
             name="The Landmark",
@@ -193,7 +201,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.8432"),
             recommand_reason="Direct access to MRT station, convenient for city commute.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=112,
             img_src="https://images.unsplash.com/photo-1568495248636-6432b97bd949?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjJ8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
             name="Penrose",
@@ -210,7 +218,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.8815"),
             recommand_reason="Brand new development with smart home features.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=113,
             img_src="https://images.unsplash.com/photo-1541004995602-b3e898709909?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjZ8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
             name="The Atelier",
@@ -227,7 +235,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.8451"),
             recommand_reason="Luxury CBD living with panoramic city views.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=114,
             img_src="https://plus.unsplash.com/premium_photo-1683917067988-1b0323c3b574?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NzN8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
             name="Parc Clematis",
@@ -244,7 +252,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.7684"),
             recommand_reason="Large family units with multiple pools and facilities.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=115,
             img_src="https://images.unsplash.com/photo-1600494448655-ae58f58bb945?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NzV8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
             name="Ki Residences",
@@ -261,7 +269,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.8502"),
             recommand_reason="Near Toa Payoh hub with all amenities within walking distance.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=116,
             img_src="https://plus.unsplash.com/premium_photo-1684445035187-c4bc7c96bc5d?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODF8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
             name="The M",
@@ -278,7 +286,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.8076"),
             recommand_reason="Compact and efficient layout perfect for young professionals.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=117,
             img_src="https://images.unsplash.com/photo-1631048501851-4aa85ffc3be8?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODR8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
             name="Verdale",
@@ -295,7 +303,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.7621"),
             recommand_reason="Spacious family home near nature reserves, peaceful environment.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=118,
             img_src="https://plus.unsplash.com/premium_photo-1683120772181-a82af8464b62?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODV8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
             name="One Pearl Bank",
@@ -312,7 +320,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.8374"),
             recommand_reason="Iconic architecture with stunning city skyline views.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=119,
             img_src="https://images.unsplash.com/photo-1567899482751-c8647fda8155?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTF8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
             name="The Woodleigh Residences",
@@ -329,7 +337,7 @@ def create_mock_response() -> RecommendationResponse:
             longitude=Decimal("103.8715"),
             recommand_reason="Integrated development with direct MRT and mall access.",
         ),
-        PropertyRecommand(
+        Property(
             property_id=120,
             img_src="https://images.unsplash.com/photo-1591079381491-cb2c19ce7f15?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTV8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
             name="Pasir Ris 8",
@@ -348,6 +356,159 @@ def create_mock_response() -> RecommendationResponse:
         ),
     ]
 
-    mock_response = RecommendationResponse(properties=mock_properties)
 
-    return mock_response
+def create_mock_properties_without_explanations_with_scores() -> List[Property]:
+    return [
+        Property(
+            property_id=104,
+            img_src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
+            name="Gem Residences (Toa Payoh)",
+            district="D12 Toa Payoh / Balestier",
+            price="1,480",
+            beds=3,
+            baths=2,
+            area=1050,
+            build_time="2020",
+            location="23 Toa Payoh Lor 4, 319512, D12 Toa Payoh / Balestier",
+            time_to_school=22,
+            distance_to_mrt=500,
+            latitude=Decimal("1.3512"),
+            longitude=Decimal("103.8387"),
+            costScore=0.8,
+            commuteScore=0.7,
+            neighborhoodScore=0.6,
+        ),
+        Property(
+            property_id=103,
+            img_src="https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
+            name="The Tre Ver",
+            district="D13 macpherson / potong pasir",
+            price="1,450",
+            beds=2,
+            baths=2,
+            area=710,
+            build_time="2019",
+            location="168 Potong Pasir Avenue 1, 350168, D13 macpherson / potong pasir",
+            time_to_school=15,
+            distance_to_mrt=350,
+            latitude=Decimal("1.3312"),
+            longitude=Decimal("103.8689"),
+            costScore=0.9,
+            commuteScore=0.9,
+            neighborhoodScore=0.7,
+        ),
+        Property(
+            property_id=105,
+            img_src="https://plus.unsplash.com/premium_photo-1674676471081-0236e34485fd?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
+            name="Stirling Residences",
+            district="D03 queenstown / tiong bahru",
+            price="1,500",
+            beds=2,
+            baths=2,
+            area=750,
+            build_time="2020",
+            location="2 Stirling Road, 148952, D03 queenstown / tiong bahru",
+            time_to_school=12,
+            distance_to_mrt=250,
+            latitude=Decimal("1.2938"),
+            longitude=Decimal("103.8054"),
+            costScore=0.6,
+            commuteScore=1.0,
+            neighborhoodScore=0.5,
+        ),
+        Property(
+            property_id=107,
+            img_src="https://media.istockphoto.com/id/2155899923/photo/well-furnished-bedroom-in-a-new-construction-home-in-encino-california.webp?a=1&b=1&s=612x612&w=0&k=20&c=LAoVG8V-fi2mfwMmAfHmd-ES2mtRyjee7Xa-OOS5MoA=",
+            name="Midtown Modern",
+            district="D07 beach road / bugis / rochor",
+            price="1,490",
+            beds=2,
+            baths=2,
+            area=780,
+            build_time="2022",
+            location="18 Tan Quee Lan Street, 188098, D07 beach road / bugis / rochor",
+            time_to_school=28,
+            distance_to_mrt=200,
+            latitude=Decimal("1.3011"),
+            longitude=Decimal("103.8552"),
+            costScore=0.7,
+            commuteScore=0.6,
+            neighborhoodScore=1.0,
+        ),
+        Property(
+            property_id=102,
+            img_src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
+            name="Parc Esta",
+            district="D14 eunos / geylang / paya lebar",
+            price="1,650",
+            beds=3,
+            baths=2,
+            area=980,
+            build_time="2019",
+            location="10 Sims Drive, 380010, D14 eunos / geylang / paya lebar",
+            time_to_school=18,
+            distance_to_mrt=450,
+            latitude=Decimal("1.3176"),
+            longitude=Decimal("103.8824"),
+            costScore=0.2,
+            commuteScore=0.9,
+            neighborhoodScore=0.8,
+        ),
+        Property(
+            property_id=106,
+            img_src="https://media.istockphoto.com/id/2159352100/photo/digitally-generated-image-of-old-style-bedroom-with-access-to-balcony.webp?a=1&b=1&s=612x612&w=0&k=20&c=vgblBzchRrnSO-0yRFc2EPBKiHQ_HJC9hh5Stmjj3ps=",
+            name="The Florence Residences",
+            district="D19 hougang / punggol / sengkang",
+            price="900",
+            beds=3,
+            baths=2,
+            area=920,
+            build_time="2021",
+            location="2 Hougang Avenue 7, 530002, D19 hougang / punggol / sengkang",
+            time_to_school=29,
+            distance_to_mrt=700,
+            latitude=Decimal("1.3721"),
+            longitude=Decimal("103.8932"),
+            costScore=1.0,
+            commuteScore=0.2,
+            neighborhoodScore=0.8,
+        ),
+        Property(
+            property_id=108,
+            img_src="https://images.unsplash.com/photo-1505692795793-20f543407193?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTZ8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
+            name="Kopar at Newton",
+            district="D09 orchard / river valley",
+            price="1,100",
+            beds=3,
+            baths=3,
+            area=1250,
+            build_time="2023",
+            location="8 Makeway Avenue, 228815, D09 orchard / river valley",
+            time_to_school=35,
+            distance_to_mrt=400,
+            latitude=Decimal("1.3124"),
+            longitude=Decimal("103.8398"),
+            costScore=0.9,
+            commuteScore=0.1,
+            neighborhoodScore=0.2,
+        ),
+        Property(
+            property_id=101,
+            img_src="https://images.unsplash.com/photo-1615874959474-d609969a20ed?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
+            name="The Sail @ Marina Bay",
+            district="D01 boat quay / raffles place",
+            price="5,500",
+            beds=2,
+            baths=2,
+            area=883,
+            build_time="2008",
+            location="6 Marina Boulevard, 018985, D01 boat quay / raffles place",
+            time_to_school=25,
+            distance_to_mrt=300,
+            latitude=Decimal("1.2798"),
+            longitude=Decimal("103.8545"),
+            costScore=0.1,
+            commuteScore=0.8,
+            neighborhoodScore=0.9,
+        ),
+    ]

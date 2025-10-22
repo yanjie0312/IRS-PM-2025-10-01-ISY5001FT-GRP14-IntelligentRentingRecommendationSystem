@@ -1,16 +1,18 @@
 from decimal import Decimal
-from typing import List, Optional
+from typing import Optional
 
 from sqlmodel import Field, SQLModel
 
 
-class PropertyBase(SQLModel):
+# 请求地图模型
+class PropertyLocation(SQLModel):
     property_id: int  
     latitude: Optional[Decimal] = Field(default=None)
     longitude: Optional[Decimal] = Field(default=None)
 
 
-class PropertyCore(PropertyBase):
+# 返回给前端房源模型 & 算法返回房源模型
+class Property(PropertyLocation):
     img_src: Optional[str] = Field(default=None, max_length=500)
     name: Optional[str] = Field(default=None, max_length=100)
     district: Optional[str] = Field(default=None, max_length=100)
@@ -25,19 +27,9 @@ class PropertyCore(PropertyBase):
     public_facilities: Optional[dict] = Field(default=None)
     facility_type: Optional[str] = Field(default=None, max_length=50)
 
+    # range(0, 1]
+    costScore: Optional[float] = Field(default=0.5) 
+    commuteScore: Optional[float] = Field(default=0.5) 
+    neighborhoodScore: Optional[float] = Field(default=0.5)  
 
-# 返回给前端房源模型
-class PropertyRecommand(PropertyCore):
-    recommend_reason: Optional[str] = Field(default=None, max_length=500)
-
-
-# 算法返回房源模型
-class ResultInfo(PropertyRecommand):
-    costScore: float # range(0, 1]
-    commuteScore: float # range(0, 1]
-    neighborhoodScore: float # range(0, 1]
-
-
-# 请求地图模型
-class PropertyLocation(PropertyBase):
-    pass
+    recommand_reason: Optional[str] = Field(default=None)

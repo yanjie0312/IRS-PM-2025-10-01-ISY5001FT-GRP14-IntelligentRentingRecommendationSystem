@@ -5,7 +5,7 @@ import math
 from dataclasses import dataclass
 
 
-from SystemCode.backend.app.models.property import ResultInfo
+from app.models import Property
 
 @dataclass
 class OptimizationWeights:
@@ -14,7 +14,7 @@ class OptimizationWeights:
     neighborhood_weight: float = 0.30
 
 
-def multi_objective_optimization_main(propertyList: List[ResultInfo]) -> List[ResultInfo]:
+def multi_objective_optimization_main(propertyList: List[Property]) -> List[Property]:
     if not propertyList:
         return []
 
@@ -33,7 +33,7 @@ def multi_objective_optimization_main(propertyList: List[ResultInfo]) -> List[Re
     return ranked_properties
 
 
-def _validate_and_filter(propertyList: List[ResultInfo]) -> List[ResultInfo]:
+def _validate_and_filter(propertyList: List[Property]) -> List[Property]:
     valid_properties = []
 
     for prop in propertyList:
@@ -44,7 +44,7 @@ def _validate_and_filter(propertyList: List[ResultInfo]) -> List[ResultInfo]:
     return valid_properties
 
 
-def _normalize_scores(properties: List[ResultInfo]) -> List[ResultInfo]:
+def _normalize_scores(properties: List[Property]) -> List[Property]:
     if len(properties) == 1:
         return properties
 
@@ -70,7 +70,7 @@ def _safe_normalize(value: float, min_val: float, max_val: float) -> float:
     return (value - min_val) / (max_val - min_val)
 
 
-def _pareto_front_layering(properties: List[ResultInfo]) -> List[List[ResultInfo]]:
+def _pareto_front_layering(properties: List[Property]) -> List[List[Property]]:
     layers = []
     remaining = properties.copy()
 
@@ -105,7 +105,7 @@ def _pareto_front_layering(properties: List[ResultInfo]) -> List[List[ResultInfo
     return layers
 
 
-def _dominates(prop_a: ResultInfo, prop_b: ResultInfo) -> bool:
+def _dominates(prop_a: Property, prop_b: Property) -> bool:
     not_worse = (
         prop_a.costScore >= prop_b.costScore and
         prop_a.commuteScore >= prop_b.commuteScore and
@@ -121,7 +121,7 @@ def _dominates(prop_a: ResultInfo, prop_b: ResultInfo) -> bool:
     return not_worse and strictly_better
 
 
-def _calculate_crowding_distance(layers: List[List[ResultInfo]]) -> List[tuple]:
+def _calculate_crowding_distance(layers: List[List[Property]]) -> List[tuple]:
     properties_with_crowding = []
 
     for layer_idx, layer in enumerate(layers):
@@ -154,7 +154,7 @@ def _calculate_crowding_distance(layers: List[List[ResultInfo]]) -> List[tuple]:
     return properties_with_crowding
 
 
-def _final_ranking(properties_with_crowding: List[tuple]) -> List[ResultInfo]:
+def _final_ranking(properties_with_crowding: List[tuple]) -> List[Property]:
     weights = OptimizationWeights()
 
     ranked_data = []

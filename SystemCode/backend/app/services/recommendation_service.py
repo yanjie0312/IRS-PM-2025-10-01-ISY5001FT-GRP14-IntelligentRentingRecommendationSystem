@@ -4,36 +4,34 @@ import os, sys
 from pydantic import ValidationError
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.services.multiObjectiveOptimization import multi_objective_optimization_main
-from app.models import EnquiryForm, EnquiryEntity, RequestInfo, ResultInfo
+from app.models import EnquiryEntity, EnquiryForm, Property
 
 # csgen
 # from dataservice.sql_api.api_model import RequestInfo as reqinfo, ResultInfo as resinfo
 # from dataservice.sql_api.api import fetchRecommendProperties_async
 
 
-async def fetchRecommendProperties(params: RequestInfo) -> List[ResultInfo]:
+async def fetchRecommendProperties(params: EnquiryForm) -> List[Property]:
     return []
     try:
-        req = reqinfo.model_validate(params.model_dump())
+        req = reqinfo.model_validate(params.model_dump(), strict=False)
     except ValidationError as e:
-        print(f"fail to convert RequestInfo into reqinfo: {e}")
+        print(f"fail to convert EnquiryForm into reqinfo: {e}")
         return []
 
     filtered_properties = await fetchRecommendProperties_async(req)
 
     try:
-        results = [ResultInfo.model_validate(p.model_dump()) for p in filtered_properties]
+        results = [Property.model_validate(p.model_dump(), strict=False) for p in filtered_properties]
     except ValidationError as e:
-        print(f"fail to convert resinfo into ResultInfo: {e}")
+        print(f"fail to convert resinfo into Property: {e}")
         return []
-
-    print(f'返回房源数量：{len(results)}')
     
     return results
 
 
 # todo qyl 确认是否会阻塞I/O需要async？
-def multi_objective_optimization_ranking(propertyList: List[ResultInfo]) -> List[ResultInfo]:
+def multi_objective_optimization_ranking(propertyList: List[Property]) -> List[Property]:
     return [multi_objective_optimization_main(propertyList)]
 
 
@@ -55,14 +53,14 @@ async def save_form_to_DB(
 async def save_recommendation_to_DB(
     *,
     db: AsyncSession,
-    recommendation: List[ResultInfo]
+    recommendation: List[Property]
 ):
     # todo qyl
     pass
 
 
 # csgen
-# async def fetchRecommendProperties(params: RequestInfo) -> List[ResultInfo]:
+# async def fetchRecommendProperties(params: EnquiryForm) -> List[Property]:
 #     req = reqinfo(
 #         min_monthly_rent=params.min_monthly_rent,
 #         max_monthly_rent=params.max_monthly_rent,

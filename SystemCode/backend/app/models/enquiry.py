@@ -8,7 +8,9 @@ if TYPE_CHECKING:
     from .recommendation import Recommendation
 
 
-class EnquiryBase(SQLModel):
+# 前端请求问卷模型 & 请求算法推荐模型
+class EnquiryForm(SQLModel):
+    device_id: Optional[str] = Field(default=None, max_length=100, index=True)
     min_monthly_rent: int
     max_monthly_rent: int
     school_id: int
@@ -19,15 +21,6 @@ class EnquiryBase(SQLModel):
     importance_rent: int = Field(default=3)
     importance_location: int = Field(default=3)
     importance_facility: int = Field(default=3)
-    
-
-class EnquiryCore(EnquiryBase):
-    device_id: Optional[str] = Field(default=None, max_length=100, index=True)
-
-
-# 前端请求问卷模型
-class EnquiryForm(EnquiryCore):
-    pass
 
 
 # 前端请求自然语言段落模型，处理时要先转换成 EnquiryForm
@@ -37,13 +30,13 @@ class EnquiryNL(SQLModel):
 
 
 # 从数据苦查询返给前端的模型，暂时没用到
-class EnquiryRead(EnquiryCore):
+class EnquiryRead(EnquiryForm):
     eid: int
     create_time: datetime
 
 
 # 存到数据库的模型
-class EnquiryEntity(EnquiryCore, table=True):
+class EnquiryEntity(EnquiryForm, table=True):
     __tablename__ = "enquiries"
 
     # extra
@@ -58,9 +51,4 @@ class EnquiryEntity(EnquiryCore, table=True):
 
     # DB relation
     recommendation: Optional["Recommendation"] = Relationship(back_populates="enquiry")
-
-
-# 请求算法推荐模型
-class RequestInfo(EnquiryBase):
-    pass
 

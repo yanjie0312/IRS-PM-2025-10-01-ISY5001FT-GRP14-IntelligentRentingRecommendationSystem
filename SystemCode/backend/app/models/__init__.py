@@ -1,5 +1,5 @@
-from .enquiry import EnquiryForm, EnquiryNL, EnquiryEntity, EnquiryRead, RequestInfo
-from .property import PropertyRecommand, PropertyLocation, ResultInfo
+from .enquiry import EnquiryForm, EnquiryNL, EnquiryEntity, EnquiryRead
+from .property import Property, PropertyLocation
 from .recommendation import Recommendation, RecommendationResponse
 
 
@@ -7,11 +7,9 @@ __all__ = [
     "EnquiryForm",
     "EnquiryNL",
     "EnquiryEntity",
-    "RequestInfo",
 
-    "PropertyRecommand",
+    "Property",
     "PropertyLocation",
-    "ResultInfo",
 
     "Recommendation",
     "RecommendationResponse",

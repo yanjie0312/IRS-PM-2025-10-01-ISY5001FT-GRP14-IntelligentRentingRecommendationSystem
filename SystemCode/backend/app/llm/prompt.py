@@ -1,6 +1,5 @@
 from .knowledge_base import SCHOOL_MAPPING_CONTEXT, DISTRICT_MAPPING_CONTEXT, FLAT_TYPE_CONTEXT
 
-
 EXTRACTION_PROMPT = f"""
     You are an intelligent rental assistant, working for the intelligent rental recommendation system at the National University of Singapore (NUS).
     Your task is to accurately extract user rental preferences from their natural language description.
@@ -19,10 +18,8 @@ EXTRACTION_PROMPT = f"""
     
     Important Rules:
     1.  **Accurate ID Mapping**: When a user mentions a school or district (e.g., "NUS" or "Clementi"), you must fill in the corresponding *ID* in the `school_id` or `target_district_id` field.
-    2.  **Extract All Information**: Do your best to extract all fields defined in the `EnquiryExtractionTool` from the user's description.
+    2.  **Extract All Information**: Do your best to extract all fields defined in the `EnquiryExtractionTool` from the user's description. The extraction rules for rent (like 'around', 'under', 'above', or specific ranges) are defined in detail within the tool's field descriptions.
     3.  **Logical Inference**:
-        - If the user says "under 1000" or "not more than 1000", set `max_monthly_rent=1000`.
-        - If the user says "800 to 1000", set `min_monthly_rent=800` and `max_monthly_rent=1000`.
         - If the user says "close to the MRT" or "near MRT", set `max_mrt_distance=500` (unit: meters).
         - If the user says "30 minutes to NTU", set `school_id=2` and `max_school_limit=30` (unit: minutes).
     4.  **Importance Scoring**:

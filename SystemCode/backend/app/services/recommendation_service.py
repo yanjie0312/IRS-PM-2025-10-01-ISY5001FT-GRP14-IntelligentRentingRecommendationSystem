@@ -1,5 +1,6 @@
 from typing import List
 
+from SystemCode.backend.app.services.multiObjectiveOptimization import multi_objective_optimization_main
 from app.models.property import ResultInfo
 from app.models import EnquiryForm, RequestInfo
 
@@ -10,7 +11,7 @@ def fetchRecommendProperties(params: RequestInfo) -> List[ResultInfo]:
 
 
 def multi_objective_optimization_ranking(propertyList: List[ResultInfo]) -> List[ResultInfo]:
-    return []
+    return [multi_objective_optimization_main(propertyList)]
 
 
 def save_form_to_DB(
@@ -27,4 +28,8 @@ def save_recommendation_to_DB(
         recommendation: List[ResultInfo]
 ):
     pass
+
+
+
+
 

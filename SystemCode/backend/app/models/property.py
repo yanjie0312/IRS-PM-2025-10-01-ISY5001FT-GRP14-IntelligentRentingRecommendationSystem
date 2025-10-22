@@ -35,7 +35,7 @@ class PropertyRecommand(PropertyCore):
 class ResultInfo(PropertyCore):
     costScore: float # range(0, 1]
     commuteScore: float # range(0, 1]
-    heighborhoodScore: float # range(0, 1]
+    neighborhoodScore: float # range(0, 1]
 
 
 # 请求地图模型

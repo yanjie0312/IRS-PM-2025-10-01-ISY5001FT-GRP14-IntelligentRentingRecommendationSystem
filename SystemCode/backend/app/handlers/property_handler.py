@@ -96,5 +96,7 @@ async def map_handler(
     *,
     location: PropertyLocation   
 ) -> HTMLResponse:
+    
+    #fetch map html page from folium
     html_content = await map_service.fetch_map_page(location=location)
-    return html_content
+    return HTMLResponse(content=html_content)

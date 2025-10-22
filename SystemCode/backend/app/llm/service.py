@@ -14,7 +14,6 @@ def convert_natural_language_to_form(
 ) -> dict:
     
     system_prompt = EXTRACTION_PROMPT
-    print("hhhhhhhhhh-1")
 
     try:
         completion = client.chat.completions.create(
@@ -39,7 +38,6 @@ def convert_natural_language_to_form(
             }
         )
         
-        print("hhhhhhhhhh-2")
         tool_call = completion.choices[0].message.tool_calls[0]
         if tool_call.function.name == "EnquiryExtractionTool":
             extracted_data = json.loads(tool_call.function.arguments)
@@ -47,10 +45,8 @@ def convert_natural_language_to_form(
             if enquiry.device_id:
                 # name must same as EnquiryForm.device_id
                 filtered_data['device_id'] = enquiry.device_id
-            print("hhhhhhhhhh-3")
             return filtered_data
         else:
-            print("hhhhhhhhhh-4")
             return {}
 
     # API Exception

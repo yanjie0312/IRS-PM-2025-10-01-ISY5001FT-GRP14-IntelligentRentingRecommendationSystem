@@ -1,6 +1,6 @@
 import openai
 from fastapi import status, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import ValidationError
 from sqlmodel import Session
 
@@ -9,15 +9,11 @@ from app.services import recommendation_service as rec_service
 from app.services import map_service as map_service
 from app.llm import service as llm_service
 
-
 def submit_form_handler(
     *,
     db: Session,
     enquiry: EnquiryForm
 ) -> RecommendationResponse:
-    
-    # temp
-    print(enquiry.model_dump_json(indent=2))
 
     # save to db
     rec_service.save_form_to_DB(db=db, enquiry=enquiry)
@@ -35,7 +31,6 @@ def submit_form_handler(
 
     return RecommendationResponse(properties=ranked_properties)
 
-
 def submit_description_handler(
     *,
     db: Session,
@@ -46,12 +41,17 @@ def submit_description_handler(
     # natural language -> dict
     extracted_dict = llm_service.convert_natural_language_to_form(enquiry=enquiry, client=client)
 
-
-    # check valid
-    if not checkValid(extracted_dict):
-        raise HTTPException(
+    # check required fields
+    missing_fields = getMissingField(extracted_dict)
+    if missing_fields:
+        print(f'missing_fields: {missing_fields}')
+        return JSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=f"Missing necessary information"
+            content={
+                "error_code": 42201,
+                "message": f"Missing necessary information: {', '.join(missing_fields)}.",
+                "missing_fields": missing_fields
+            }
         )
     
     # create form
@@ -63,17 +63,19 @@ def submit_description_handler(
             detail=f"Error validating extracted preferences from LLM: {e}"
         )
 
-    print('llm success!')
+    print(f'LLM success! \
+          \n EnquiryNL: {enquiry.model_dump_json(indent=2)}\
+          \n EnquiryForm: {enquiry_form.model_dump_json(indent=2)}')
+    
     return submit_form_handler(db=db, enquiry=enquiry_form)
 
 
-def checkValid(extracted_dict: dict) -> bool:
+def getMissingField(extracted_dict: dict) -> list:
     required_fields = ['min_monthly_rent', 'max_monthly_rent', 'school_id']
-    for field in required_fields:
-        if (field not in extracted_dict) or (extracted_dict.get(field) is None):
-            return False
-    return True
-
+    return [
+        field for field in required_fields 
+        if (field not in extracted_dict) or (extracted_dict.get(field) is None)
+    ]
 
 def map_handler(
     *,

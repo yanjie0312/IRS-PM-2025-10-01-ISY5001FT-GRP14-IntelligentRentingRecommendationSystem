@@ -11,8 +11,8 @@ from api_model import RequestInfo, ResultInfo
 current_dir = os.path.dirname(__file__) 
 project_root = os.path.abspath(os.path.join(current_dir, '..', '..')) 
 sys.path.insert(0, project_root) 
-from SystemCode.db.model import HousingData, District, University, CommuteTime, Park, HawkerCenter, Supermarket, Library, ImageRecord
-from SystemCode.db.envconfig import get_database_url_async
+from dataservice.db.model import HousingData, District, University, CommuteTime, Park, HawkerCenter, Supermarket, Library, ImageRecord
+from dataservice.db.envconfig import get_database_url_async
 
 DATABASE_URL_ASYNC = get_database_url_async()
 async_engine = create_async_engine(

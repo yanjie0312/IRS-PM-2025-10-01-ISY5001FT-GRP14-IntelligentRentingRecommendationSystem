@@ -1,5 +1,7 @@
 import json
+import asyncio
 from fastapi import HTTPException, status
+from fastapi.concurrency import run_in_threadpool
 import openai
 
 from app.models import EnquiryNL
@@ -7,7 +9,7 @@ from .tools import EnquiryExtractionTool
 from .prompt import EXTRACTION_PROMPT
 
 
-def convert_natural_language_to_form(
+async def convert_natural_language_to_form(
         *,
         enquiry: EnquiryNL,
         client: openai.OpenAI
@@ -16,7 +18,7 @@ def convert_natural_language_to_form(
     system_prompt = EXTRACTION_PROMPT
 
     try:
-        completion = client.chat.completions.create(
+        completion = await client.chat.completions.create(
             model="gpt-4-turbo",
             messages=[
                 {"role": "system", "content": system_prompt},
@@ -51,7 +53,6 @@ def convert_natural_language_to_form(
 
     # API Exception
     except openai.OpenAIError as e:
-        
         print(f"OpenAI API error: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 

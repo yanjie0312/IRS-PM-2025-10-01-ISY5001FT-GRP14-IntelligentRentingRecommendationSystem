@@ -1,5 +1,6 @@
 import os
-from sqlmodel import SQLModel, create_engine
+from sqlmodel import SQLModel
+from sqlalchemy.ext.asyncio import create_async_engine
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,10 +10,15 @@ DATABASE_URL = os.getenv(
     "postgresql://yilin:qiyilin710@localhost:5432/irrs_dev"
 )
 
-engine = create_engine(
-    DATABASE_URL,
-    echo=True
+ASYNC_DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://")
+
+engine = create_async_engine(
+    ASYNC_DATABASE_URL,
+    echo=True,
+    future=True
 )
 
-def create_db_and_tables():
-    SQLModel.metadata.create_all(engine)
+async def create_db_and_tables():
+    async with engine.begin() as conn:
+        # await conn.run_sync(SQLModel.metadata.drop_all) # if reset needed
+        await conn.run_sync(SQLModel.metadata.create_all)

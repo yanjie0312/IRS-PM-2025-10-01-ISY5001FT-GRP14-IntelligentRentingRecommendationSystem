@@ -44,6 +44,8 @@ services:
       - "8000:8000"
     environment:
       DATABASE_URL: postgresql://${DB_USER:-yilin}:${DB_PASSWORD:-qiyilin710}@postgres:5432/${DB_NAME:-irrs_dev}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     volumes:
       - .:/app
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload

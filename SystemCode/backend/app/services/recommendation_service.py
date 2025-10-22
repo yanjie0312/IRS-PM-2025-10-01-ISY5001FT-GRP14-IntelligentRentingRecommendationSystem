@@ -1,30 +1,38 @@
 from typing import List
 
+from sqlmodel.ext.asyncio.session import AsyncSession
 from app.models.property import ResultInfo
-from app.models import EnquiryForm, RequestInfo
+from app.models import EnquiryForm, EnquiryEntity, RequestInfo
 
 
 # todo csgen
-def fetchRecommendProperties(params: RequestInfo) -> List[ResultInfo]:
+async def fetchRecommendProperties(params: RequestInfo) -> List[ResultInfo]:
     return []
 
 
-def multi_objective_optimization_ranking(propertyList: List[ResultInfo]) -> List[ResultInfo]:
+async def multi_objective_optimization_ranking(propertyList: List[ResultInfo]) -> List[ResultInfo]:
     return []
 
 
-def save_form_to_DB(
+async def save_form_to_DB(
     *,
-    db,
+    db: AsyncSession,
     enquiry: EnquiryForm
 ):
-    # 生成 EnquiryEntity
+    # 暂不入库
+    # enquiry_entity = EnquiryEntity.model_validate(enquiry)
+
+    # db.add(enquiry_entity)
+    # await db.commit()
+    # await db.refresh(enquiry_entity)
+    # print(f"Saved enquiry {enquiry_entity.eid} to database.")
     pass
 
 
-def save_recommendation_to_DB(
-        *,
-        recommendation: List[ResultInfo]
+async def save_recommendation_to_DB(
+    *,
+    db: AsyncSession,
+    recommendation: List[ResultInfo]
 ):
+    # todo qyl 待实现
     pass
-

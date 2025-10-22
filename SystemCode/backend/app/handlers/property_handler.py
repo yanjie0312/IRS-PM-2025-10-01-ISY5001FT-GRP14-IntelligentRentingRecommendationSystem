@@ -1,48 +1,54 @@
 import openai
+import asyncio
 from fastapi import status, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import ValidationError
-from sqlmodel import Session
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models import EnquiryForm, EnquiryNL, PropertyLocation, RecommendationResponse, RequestInfo
 from app.services import recommendation_service as rec_service
 from app.services import map_service as map_service
 from app.llm import service as llm_service
 
-def submit_form_handler(
+
+async def submit_form_handler(
     *,
-    db: Session,
+    db: AsyncSession,
+    client: openai.AsyncOpenAI,
     enquiry: EnquiryForm
 ) -> RecommendationResponse:
 
     # save to db
-    rec_service.save_form_to_DB(db=db, enquiry=enquiry)
+    await rec_service.save_form_to_DB(db=db, enquiry=enquiry)
 
     # get TopN recommendation
     enquiry_dict = enquiry.model_dump()
     requestInfo = RequestInfo.model_validate(enquiry_dict)
-    resultInfo = rec_service.fetchRecommendProperties(requestInfo)
+    resultInfo = await rec_service.fetchRecommendProperties(requestInfo)
 
     # multi-objective optimization ranking
-    ranked_properties = rec_service.multi_objective_optimization_ranking(resultInfo)
+    ranked_properties = await rec_service.multi_objective_optimization_ranking(resultInfo)
+
+    # todo qyl llm生成解释
 
     # save recommendation result
-    rec_service.save_recommendation_to_DB(recommendation=ranked_properties)
+    await rec_service.save_recommendation_to_DB(db=db, recommendation=ranked_properties)
 
     return RecommendationResponse(properties=ranked_properties)
 
-def submit_description_handler(
+
+async def submit_description_handler(
     *,
-    db: Session,
-    client: openai.OpenAI,
+    db: AsyncSession,
+    client: openai.AsyncOpenAI,
     enquiry: EnquiryNL,
 ) -> RecommendationResponse:
 
     # natural language -> dict
-    extracted_dict = llm_service.convert_natural_language_to_form(enquiry=enquiry, client=client)
+    extracted_dict = await llm_service.convert_natural_language_to_form(enquiry=enquiry, client=client)
 
     # check required fields
-    missing_fields = getMissingField(extracted_dict)
+    missing_fields = _getMissingField(extracted_dict)
     if missing_fields:
         print(f'missing_fields: {missing_fields}')
         return JSONResponse(
@@ -67,18 +73,19 @@ def submit_description_handler(
           \n EnquiryNL: {enquiry.model_dump_json(indent=2)}\
           \n EnquiryForm: {enquiry_form.model_dump_json(indent=2)}')
     
-    return submit_form_handler(db=db, enquiry=enquiry_form)
+    return await submit_form_handler(db=db, client=client, enquiry=enquiry_form)
 
 
-def getMissingField(extracted_dict: dict) -> list:
+def _getMissingField(extracted_dict: dict) -> list:
     required_fields = ['min_monthly_rent', 'max_monthly_rent', 'school_id']
     return [
         field for field in required_fields 
         if (field not in extracted_dict) or (extracted_dict.get(field) is None)
     ]
 
-def map_handler(
+async def map_handler(
     *,
     location: PropertyLocation   
 ) -> HTMLResponse:
-    return map_service.fetch_map_page(location)
+    html_content = await map_service.fetch_map_page(location=location)
+    return html_content

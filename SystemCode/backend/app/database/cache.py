@@ -1,15 +1,17 @@
 import os
-import redis
-from functools import lru_cache
+import redis.asyncio as redis
 
 
-@lru_cache() 
-def get_redis_client() -> redis.Redis:
-    redis_host = os.getenv("REDIS_HOST", "localhost")
-    redis_port = int(os.getenv("REDIS_PORT", 6379))
-    pool = redis.ConnectionPool(host=redis_host, port=redis_port, db=0, decode_responses=True)
-    return redis.Redis(connection_pool=pool)
+redis_host = os.getenv("REDIS_HOST")
+if not redis_host:
+    raise ValueError("REDIS_HOST environment variable is not set.")
+redis_port = int(os.getenv("REDIS_PORT", 6379))
 
+_redis_pool = redis.ConnectionPool(
+    host=redis_host, 
+    port=redis_port, 
+    db=0, 
+    decode_responses=True
+)
 
-def get_redis() -> redis.Redis:
-    return get_redis_client()
+redis_client = redis.Redis(connection_pool=_redis_pool)

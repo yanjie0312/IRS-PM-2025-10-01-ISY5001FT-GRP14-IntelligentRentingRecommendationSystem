@@ -3,11 +3,9 @@ import os, sys
 
 from app.models.property import ResultInfo
 from app.models import EnquiryForm, RequestInfo
-from dataservice.sql_api.api_model import RequestInfo as reqinfo
-from dataservice.sql_api.api_model import ResultInfo as resinfo
+from dataservice.sql_api.api_model import RequestInfo as reqinfo, ResultInfo as resinfo
 from dataservice.sql_api.api import fetchRecommendProperties_async
 
-# todo csgen
 async def fetchRecommendProperties(params: RequestInfo) -> List[ResultInfo]:
     req = reqinfo(
         min_monthly_rent=params.min_monthly_rent,

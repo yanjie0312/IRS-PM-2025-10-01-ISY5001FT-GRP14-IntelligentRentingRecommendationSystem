@@ -4,11 +4,13 @@ import os, sys
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.models.property import ResultInfo
 from app.models import EnquiryForm, EnquiryEntity, RequestInfo
-from dataservice.sql_api.api_model import RequestInfo as reqinfo, ResultInfo as resinfo
-from dataservice.sql_api.api import fetchRecommendProperties_async
+# from dataservice.sql_api.api_model import RequestInfo as reqinfo, ResultInfo as resinfo
+# from dataservice.sql_api.api import fetchRecommendProperties_async
 
 
 async def fetchRecommendProperties(params: RequestInfo) -> List[ResultInfo]:
+    # todo qyl 临时
+    return []
     req = reqinfo(
         min_monthly_rent=params.min_monthly_rent,
         max_monthly_rent=params.max_monthly_rent,
@@ -67,7 +69,7 @@ async def save_recommendation_to_DB(
     db: AsyncSession,
     recommendation: List[ResultInfo]
 ):
-    # todo qyl 待实现
+    # todo qyl
     pass
 
 if __name__ == "__main__":

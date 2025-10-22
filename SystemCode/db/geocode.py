@@ -2,12 +2,14 @@ import requests
 import time
 from sqlalchemy import create_engine, or_, text
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+import asyncio
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point
 import re
 import time
-from envconfig import get_database_url, get_openmap_token, get_openmap_library_url
-from model import Base, District, HousingData, University, CommuteTime, Library
+from envconfig import get_database_url, get_openmap_token, get_openmap_library_url, get_database_url_async
+from model import Base, District, HousingData, University, CommuteTime, Library, Park, HawkerCenter, Supermarket
 
 database_url = get_database_url()
 engine = create_engine(database_url)
@@ -316,7 +318,94 @@ def insert_all_libraries_to_db():
         print("Error inserting libraries:", e)
     finally:
         session.close()
-    
+
+# 定义要计算的设施类型和对应模型
+FACILITY_MODELS = {
+    "park": Park,
+    "hawkercenter": HawkerCenter,
+    "supermarket": Supermarket,
+    "library": Library,
+}
+
+DATABASE_URL_ASYNC = get_database_url_async()
+async_engine = create_async_engine(
+    DATABASE_URL_ASYNC, 
+    echo=False,)
+
+AsyncSessionLocal = sessionmaker(
+    bind=async_engine, class_=AsyncSession, expire_on_commit=False
+)
+
+async def compute_nearest_facilities(session: AsyncSession, facility_type: str, model, limit_n: int = 3):
+    '''
+    为所有房源计算给定设施类型最近的 N 个设施距离
+    并 upsert 到 housing_facility_distances 表中
+    '''
+    print(f"开始计算 {facility_type} 最近的 {limit_n} 个设施...")
+    start_time = time.time()
+
+    # 使用纯 SQL 实现高效 lateral join
+    sql = text(f"""
+        INSERT INTO housing_facility_distances
+            (housing_id, facility_type, facility_id, facility_name, rank, distance_m)
+        SELECT
+            h.id AS housing_id,
+            :facility_type AS facility_type,
+            f.id AS facility_id,
+            f.name AS facility_name,
+            ROW_NUMBER() OVER (PARTITION BY h.id ORDER BY h.geog <-> f.geog) AS rank,
+            ST_Distance(h.geog, f.geog) AS distance_m
+        FROM housing_data h
+        JOIN LATERAL (
+            SELECT id, name, geog
+            FROM {model.__tablename__}
+            ORDER BY h.geog <-> {model.__tablename__}.geog
+            LIMIT :limit_n
+        ) f ON TRUE
+        ON CONFLICT (housing_id, facility_type, rank)
+        DO UPDATE SET
+            facility_id = EXCLUDED.facility_id,
+            facility_name = EXCLUDED.facility_name,
+            distance_m = EXCLUDED.distance_m;
+    """)
+
+    await session.execute(sql, {"facility_type": facility_type, "limit_n": limit_n})
+    await session.commit()
+
+    print(f"✅ {facility_type} 计算完成，用时 {time.time() - start_time:.2f}s")
+
+async def run_precompute():
+    '''执行预计算'''
+    async with AsyncSessionLocal() as session:
+        # 确保目标表存在
+        await session.execute(text("""
+            CREATE TABLE IF NOT EXISTS housing_facility_distances (
+                id SERIAL PRIMARY KEY,
+                housing_id INTEGER REFERENCES housing_data(id),
+                facility_type VARCHAR(50),
+                facility_id INTEGER,
+                facility_name VARCHAR(255),
+                rank INTEGER,
+                distance_m FLOAT,
+                UNIQUE (housing_id, facility_type, rank)
+            );
+        """))
+        await session.commit()
+
+    # 并发执行 4 个设施类型计算任务（每个任务单独 session）
+    async def run_one_type(facility_type, model):
+        async with AsyncSessionLocal() as sub_session:
+            await compute_nearest_facilities(sub_session, facility_type, model)
+
+    tasks = [
+        run_one_type(ftype, fmodel)
+        for ftype, fmodel in FACILITY_MODELS.items()
+    ]
+
+    await asyncio.gather(*tasks)
+
+    print("所有设施距离预计算完成。")
+
 if __name__ == "__main__":
     # long, lat = get_longitude_latitude("Singapore University of Social Sciences (SUSS)")
     # print(f"Longitude: {long}, Latitude: {lat}")
@@ -330,4 +419,5 @@ if __name__ == "__main__":
 
     # calculate_housing_to_university_commute_time() # 计算所有房源到所有大学的通勤时间
     # get_all_libraries_from_onemap()
-    insert_all_libraries_to_db() # 插入所有图书馆数据
+    # insert_all_libraries_to_db() # 插入所有图书馆数据
+    asyncio.run(run_precompute())

@@ -125,6 +125,17 @@ class Library(Base):
     geom = Column(Geometry(geometry_type='POINT', srid=3414), nullable=True)
     geog = Column(Geography(geometry_type='POINT', srid=4326), nullable=True)
 
+class HousingFacilityDistance(Base):
+    __tablename__ = 'housing_facility_distances'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    housing_id = Column(Integer, ForeignKey('housing_data.id'), index=True)
+    facility_type = Column(String(50))  # 'park', 'hawker', 'library', 'supermarket'
+    facility_id = Column(Integer)
+    facility_name = Column(String(255))
+    rank = Column(Integer)  # 第几个最近的（1, 2, 3）
+    distance_m = Column(Float)
+
 class ImageRecord(Base):
     '''图片数据'''
     __tablename__ = 'images'

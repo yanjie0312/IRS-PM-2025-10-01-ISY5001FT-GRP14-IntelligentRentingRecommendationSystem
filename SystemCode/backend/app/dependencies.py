@@ -12,7 +12,7 @@ from app.database.cache import redis_client
 def get_async_openai_client(request: Request) -> openai.AsyncOpenAI:
     return request.app.state.async_openai_client
 
-# todo qyl async_sessionmaker有问题
+
 async_session_maker = async_sessionmaker(
     bind=engine, 
     class_=AsyncSession, 

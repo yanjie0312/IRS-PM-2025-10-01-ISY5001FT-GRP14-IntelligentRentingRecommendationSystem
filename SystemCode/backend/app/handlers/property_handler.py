@@ -19,8 +19,8 @@ async def submit_form_handler(
     enquiry: EnquiryForm
 ) -> RecommendationResponse:
 
-    # save to db
-    await db_service.save_form_to_DB(db=db, enquiry=enquiry)
+    # save enquiry to db and cache
+    enquiry_entity = await db_service.save_enquiry(db=db, enquiry=enquiry)
 
     # get TopN recommendation
     properties = await rec_service.fetchRecommendProperties(enquiry)
@@ -39,8 +39,12 @@ async def submit_form_handler(
         k = 10
     )
 
-    # save recommendation result
-    await db_service.save_recommendation_to_DB(db=db, recommendation=top_k_with_explanations)
+    # save recommendation result to db and cache
+    await db_service.save_recommendation(
+        eid=enquiry_entity.eid if enquiry_entity else None, 
+        db=db, 
+        properties=top_k_with_explanations
+    )
 
     return RecommendationResponse(properties=ranked_properties)
 

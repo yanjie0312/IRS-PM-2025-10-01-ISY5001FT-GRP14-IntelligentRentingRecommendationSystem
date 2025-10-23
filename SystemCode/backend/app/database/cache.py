@@ -1,6 +1,7 @@
 import os
 import redis.asyncio as redis
 
+CACHE_TTL_SECONDS = 60 * 60 * 24 # 24 hours in seconds
 
 redis_host = os.getenv("REDIS_HOST")
 if not redis_host:

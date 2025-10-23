@@ -6,6 +6,7 @@ from pydantic import ValidationError
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models import EnquiryForm, EnquiryNL, PropertyLocation, Property, RecommendationResponse
+from app.database import crud as db_service
 from app.services import recommendation_service as rec_service
 from app.services import map_service as map_service
 from app.llm import service as llm_service
@@ -19,13 +20,16 @@ async def submit_form_handler(
 ) -> RecommendationResponse:
 
     # save to db
-    await rec_service.save_form_to_DB(db=db, enquiry=enquiry)
+    await db_service.save_form_to_DB(db=db, enquiry=enquiry)
 
     # get TopN recommendation
     properties = await rec_service.fetchRecommendProperties(enquiry)
 
     # multi-objective optimization ranking
-    ranked_properties: List[Property] = await rec_service.multi_objective_optimization_ranking(properties)
+    ranked_properties: List[Property] = rec_service.multi_objective_optimization_ranking(
+        enquiry=enquiry, 
+        propertyList=properties
+    )
 
     # LLM generate natural language reason for recommendation
     top_k_with_explanations = await llm_service.generate_explanation_for_top_properties(
@@ -36,7 +40,7 @@ async def submit_form_handler(
     )
 
     # save recommendation result
-    await rec_service.save_recommendation_to_DB(db=db, recommendation=top_k_with_explanations)
+    await db_service.save_recommendation_to_DB(db=db, recommendation=top_k_with_explanations)
 
     return RecommendationResponse(properties=ranked_properties)
 

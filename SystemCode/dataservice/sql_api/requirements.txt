@@ -1,0 +1,4 @@
+geoalchemy2==0.18.0
+pydantic==2.12.3
+python-dotenv==1.1.1
+SQLAlchemy==2.0.44

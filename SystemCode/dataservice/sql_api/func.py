@@ -2,10 +2,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.future import select
 from sqlalchemy import func, text
-import asyncio
-from math import isnan
 import time
-import sys, os
 from api_model import RequestInfo, ResultInfo
 from model import HousingData, District, University, CommuteTime, Park, HawkerCenter, Supermarket, Library, ImageRecord
 from envconfig import get_database_url_async
@@ -44,6 +41,17 @@ def remove_duplicate_housings(housings: list[HousingData]) -> tuple[list[Housing
             removed_count += 1
     
     return unique_housings, removed_count
+
+def get_total_score(price_norm, commute_norm, neighbourhood_norm, request):
+    '''加权总分'''
+    if request.importance_rent:
+        price_score = request.importance_rent * price_norm
+    if request.importance_location:
+        commute_score = request.importance_location * commute_norm
+    if request.importance_facility:
+        neighbourhood_score = request.importance_facility * neighbourhood_norm
+
+    return price_score+commute_score+neighbourhood_score
 
 async def query_housing_data_async(request: RequestInfo) -> list[HousingData]:
     '''根据 RequestInfo 查询符合条件的房源'''
@@ -239,7 +247,7 @@ async def filter_housing_async(housings: list[HousingData], request: RequestInfo
 
         for i, data in enumerate(raw_data):
             housing = data["housing"]
-            total_score = price_norm[i] + commute_norm[i] + neighbour_norm[i]
+            total_score = get_total_score(price_norm[i],commute_norm[i],neighbour_norm[i],request)
 
             resultInfo = ResultInfo(
                 property_id=housing.id,

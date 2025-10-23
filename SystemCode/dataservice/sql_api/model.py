@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, BigInteger, String, Float, Boolean, Text, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, BigInteger, String, Float, Boolean, Text, ForeignKey, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from geoalchemy2 import Geometry, Geography

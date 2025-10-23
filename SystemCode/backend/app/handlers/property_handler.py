@@ -10,6 +10,7 @@ from app.database import crud as db_service
 from app.services import recommendation_service as rec_service
 from app.services import map_service as map_service
 from app.llm import service as llm_service
+from app.utils import mock_data
 
 
 async def submit_form_handler(
@@ -38,6 +39,9 @@ async def submit_form_handler(
         client=client,
         k = 10
     )
+
+    # test
+    # top_k_with_explanations = mock_data.create_mock_properties_with_explanations()
 
     # save recommendation result to db and cache
     await db_service.save_recommendation(

@@ -47,7 +47,6 @@ async def save_enquiry(
     return saved_entity
 
 
-
 async def save_recommendation(
     *,
     eid: int,

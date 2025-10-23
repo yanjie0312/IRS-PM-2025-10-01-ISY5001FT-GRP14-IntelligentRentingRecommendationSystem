@@ -49,7 +49,8 @@ services:
       PYTHONPATH: /app
     volumes:
       - .:/app
-    # command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    # docker 本地跑在容器里需注释掉
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload 
     depends_on:
       postgres:
         condition: service_healthy

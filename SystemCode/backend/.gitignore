@@ -9,6 +9,7 @@ __pycache__/
 
 # Sensitive environment variable files
 .env
+.devcontainer/
 
 # IDE and OS files
 .idea/

@@ -2,7 +2,7 @@ import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios"
 import type Decimal from "decimal.js"
 import { convertPropertiesCoordinates } from "./utils/decimal"
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://bottle-recovery-ensure-question.trycloudflare.com"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://localhost:8000"
 
 // Create axios instance with default configuration
 const apiClient: AxiosInstance = axios.create({
@@ -150,7 +150,7 @@ export interface Property {
     [key: string]: string
   }>
   facility_type: string
-  recommend_reason: string
+  recommand_reason: string
 }
 
 // Recommendations response interface

@@ -191,10 +191,11 @@ export const api = {
     return response
   },
 
-  submitDescription: async (description: string) => {
-    console.log("[v0] Submitting description:", description)
+  submitDescription: async (device_id: string, requirement_description: string) => {
+    console.log("[v0] Submitting description:", requirement_description)
     const response = await apiClient.post<RecommendationsResponse>("/api/v1/properties/submit-description", {
-      description,
+      device_id,
+      requirement_description,
     })
     console.log("[v0] Description submission response:", response.data)
     if (response.data && response.data.properties) {

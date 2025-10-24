@@ -46,6 +46,7 @@ export default function UserInputPage() {
 
   const [nlpInput, setNlpInput] = useState("")
   const [nlpError, setNlpError] = useState(false)
+  const [missingFields, setMissingFields] = useState<string[]>([]) 
   const maxChars = 500
 
   useEffect(() => {
@@ -141,7 +142,6 @@ export default function UserInputPage() {
       const response = await api.submitDescription(getDeviceId(), nlpInput)
 
       localStorage.setItem(NLP_INPUT_KEY, nlpInput)
-
       localStorage.setItem('recommendations_data', JSON.stringify(response.data))
       localStorage.setItem('recommendations_source', 'submit')
 
@@ -149,19 +149,39 @@ export default function UserInputPage() {
       router.push("/recomm")
     } catch (error: any) {
       console.error("Failed to submit NLP input:", error)
+
       if (error.code === 42201) {
+        console.log("[v0] Missing required fields:", error.missing_fields)
         setNlpError(true)
+        setMissingFields(error.missing_fields || []) 
+        return
       }
-      const errorMessage =
-        error.name === "NetworkError"
-          ? "Unable to connect to the server. This appears to be a network or CORS issue. Please check:\n\n" +
+
+      if (error.code === 42201) {
+        console.log("[v0] Missing required fields:", error.missing_fields)
+        setNlpError(true)
+
+        if (error.missing_fields && error.missing_fields.length > 0) {
+          alert(`Please include the following information: ${error.missing_fields.join(", ")}`)
+        } else {
+          alert(error.message || "Incomplete information, please ensure price range and target school are included")
+        }
+        return
+      }
+
+      if (error.name === "NetworkError") {
+        alert(
+          "Unable to connect to the server. This appears to be a network or CORS issue. Please check:\n\n" +
           "1. The backend server is running and accessible\n" +
           "2. CORS is properly configured on the backend\n" +
           "3. Your internet connection is stable\n\n" +
           "Technical details: " +
           error.message
-          : error.message || "Submission failed, please try again"
-      alert(errorMessage)
+        )
+        return
+      }
+
+      alert(error.message || "Submission failed, please try again")
     } finally {
       setIsSubmitting(false)
     }
@@ -472,7 +492,12 @@ export default function UserInputPage() {
                       maxLength={maxChars}
                     />
                     <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>Missing necessary information: min_monthly_rent.</span>
+                      <span className={nlpError && missingFields.length > 0 ? "text-red-500 font-medium" : ""}>
+                        {nlpError && missingFields.length > 0
+                          ? `Missing necessary information: ${missingFields.join(", ")}.`
+                          : "Please include price range and target school"
+                        }
+                      </span>
                       <span className={nlpInput.length >= maxChars ? "text-red-500 font-medium" : ""}>
                         {nlpInput.length}/{maxChars}
                       </span>

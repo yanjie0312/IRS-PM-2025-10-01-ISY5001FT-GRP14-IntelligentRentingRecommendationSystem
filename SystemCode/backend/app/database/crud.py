@@ -8,7 +8,6 @@ from app.models import EnquiryForm, EnquiryEntity, Property, Recommendation
 from app.database.cache import redis_client, CACHE_TTL_SECONDS
 
 
-
 async def save_enquiry(
     *,
     db: AsyncSession,

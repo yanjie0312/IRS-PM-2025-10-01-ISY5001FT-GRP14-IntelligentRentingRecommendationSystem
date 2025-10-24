@@ -29,6 +29,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=300,
             latitude=Decimal("1.2798"),
             longitude=Decimal("103.8545"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Fantastic central location, close to the metro, convenient living.",
         ),
         Property(

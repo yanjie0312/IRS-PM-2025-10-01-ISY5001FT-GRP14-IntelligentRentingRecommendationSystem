@@ -3,9 +3,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.future import select
 from sqlalchemy import func, text
 import time
-from api_model import RequestInfo, ResultInfo
-from model import HousingData, District, University, CommuteTime, Park, HawkerCenter, Supermarket, Library, ImageRecord
-from envconfig import get_database_url_async
+from .api_model import RequestInfo, ResultInfo
+from .model import HousingData, District, University, CommuteTime, Park, HawkerCenter, Supermarket, Library, ImageRecord
+from .envconfig import get_database_url_async
 
 DATABASE_URL_ASYNC = get_database_url_async()
 async_engine = create_async_engine(
@@ -82,6 +82,7 @@ async def query_housing_data_async(request: RequestInfo) -> list[HousingData]:
 
     # 异步执行查询
     async with AsyncSessionLocal() as session:
+        print(DATABASE_URL_ASYNC)
         result = await session.execute(stmt)
         housings = result.scalars().all()
 

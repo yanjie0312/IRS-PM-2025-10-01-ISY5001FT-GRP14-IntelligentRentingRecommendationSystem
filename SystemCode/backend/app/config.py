@@ -14,6 +14,13 @@ class Settings(BaseSettings):
     # openai
     OPENAI_API_KEY: str
 
+    # cloud
+    CLOUD_DB_HOST: str
+    CLOUD_DB_PORT: str
+    CLOUD_DB_DATABASE: str
+    CLOUD_DB_USERNAME: str
+    CLOUD_DB_PASSWORD: str
+
     class Config:
         env_file = ".env"
 

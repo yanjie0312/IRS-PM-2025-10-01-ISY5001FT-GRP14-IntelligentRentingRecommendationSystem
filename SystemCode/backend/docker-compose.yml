@@ -44,13 +44,14 @@ services:
       - "8000:8000"
     environment:
       DATABASE_URL: postgresql://${DB_USER:-yilin}:${DB_PASSWORD:-qiyilin710}@postgres:5432/${DB_NAME:-irrs_dev}
+      CLOUD_DATABASE_URL: postgresql+asyncpg://${CLOUD_DB_USERNAME}:${CLOUD_DB_PASSWORD}@${CLOUD_DB_HOST}:${CLOUD_DB_PORT}/${CLOUD_DB_DATABASE}
       REDIS_HOST: redis
       REDIS_PORT: 6379
       PYTHONPATH: /app
     volumes:
       - .:/app
     # docker 本地跑在容器里需注释掉
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload 
+    # command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload 
     depends_on:
       postgres:
         condition: service_healthy

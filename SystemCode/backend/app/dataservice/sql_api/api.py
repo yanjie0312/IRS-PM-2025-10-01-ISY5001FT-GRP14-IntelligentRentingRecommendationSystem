@@ -1,5 +1,5 @@
-from api_model import RequestInfo, ResultInfo
-from func import query_housing_data_async, filter_housing_async
+from .api_model import RequestInfo, ResultInfo
+from .func import query_housing_data_async, filter_housing_async
 import asyncio
 import time
 

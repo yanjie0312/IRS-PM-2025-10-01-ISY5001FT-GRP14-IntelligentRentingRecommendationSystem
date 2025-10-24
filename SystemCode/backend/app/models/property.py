@@ -24,7 +24,7 @@ class Property(PropertyLocation):
     location: Optional[str] = Field(default=None, max_length=100)
     time_to_school: Optional[int] = Field(default=None)
     distance_to_mrt: Optional[int] = Field(default=None)
-    public_facilities: Optional[dict] = Field(default=None)
+    public_facilities: Optional[list[dict]] = Field(default=None)
     facility_type: Optional[str] = Field(default=None, max_length=50)
 
     # range(0, 1]

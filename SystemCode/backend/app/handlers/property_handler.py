@@ -37,7 +37,7 @@ async def submit_form_handler(
         enquiry=enquiry,
         ranked_properties=ranked_properties,
         client=client,
-        k = 10
+        k = 1
     )
 
     # test

@@ -293,12 +293,15 @@ export default function RentDetailPage() {
                         Nearby Facilities
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {property.public_facilities.map((facility, index) => (
-                          <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                            <span className="font-medium">{facility.name}</span>
-                            <Badge variant="secondary">{facility.distance}m</Badge>
-                          </div>
-                        ))}
+                        {property.public_facilities.map((facility, index) => {
+                          const [name, distance] = Object.entries(facility)[0]
+                          return (
+                            <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                              <span className="font-medium text-sm">{name}</span>
+                              <Badge variant="secondary">{distance}m</Badge>
+                            </div>
+                          )
+                        })}
                       </div>
                     </div>
                   </>

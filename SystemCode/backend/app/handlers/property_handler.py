@@ -50,7 +50,7 @@ async def submit_form_handler(
         properties=top_k_with_explanations
     )
 
-    return RecommendationResponse(properties=ranked_properties)
+    return RecommendationResponse(properties=top_k_with_explanations)
 
 
 async def submit_description_handler(

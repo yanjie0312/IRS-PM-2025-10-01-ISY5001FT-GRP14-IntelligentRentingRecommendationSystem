@@ -2,7 +2,7 @@ import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios"
 import type Decimal from "decimal.js"
 import { convertPropertiesCoordinates } from "./utils/decimal"
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://localhost:8000"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000/"
 
 // Create axios instance with default configuration
 const apiClient: AxiosInstance = axios.create({

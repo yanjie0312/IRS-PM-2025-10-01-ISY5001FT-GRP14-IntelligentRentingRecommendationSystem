@@ -68,26 +68,20 @@ apiClient.interceptors.response.use(
       statusText: response.statusText,
       data: response.data,
       dataType: typeof response.data,
-
     })
-
 
     if ((response.config as CustomAxiosRequestConfig).isMapRequest) {
       console.log("[v0] Received HTML response (Map Request), returning raw data.")
-
       return response
     }
 
     // Original JSON processing logic (for standard API responses)
-    // Extract data from unified response format
     if (response.data && typeof response.data === "object" && "code" in response.data) {
       const apiResponse = response.data as ApiResponse
       console.log("[v0] API Response Code:", apiResponse.code, "Message:", apiResponse.message)
       if (apiResponse.code === 200) {
-        // Success: return the data field
         response.data = apiResponse.data
       } else {
-        // Error code in response: reject with error info
         return Promise.reject({
           code: apiResponse.code,
           message: apiResponse.message,
@@ -95,7 +89,6 @@ apiClient.interceptors.response.use(
         })
       }
     } else if (typeof response.data === "string" && response.data.trim().startsWith("<!DOCTYPE")) {
-
       console.log("[v0] Received HTML response (likely map HTML/error page) without map tag.")
       return response
     }
@@ -104,13 +97,34 @@ apiClient.interceptors.response.use(
   },
   (error) => {
     if (error.response) {
-      // Server responded with error status
       console.error("[v0] API Error Response:", {
         status: error.response.status,
         statusText: error.response.statusText,
         data: error.response.data,
         headers: error.response.headers,
       })
+
+      if (error.response.status === 422 && error.response.data) {
+        const errorData = error.response.data
+
+
+        if (errorData.error_code) {
+          return Promise.reject({
+            code: errorData.error_code,
+            message: errorData.message || "Validation error",
+            missing_fields: errorData.missing_fields || [],
+            response: error.response,
+          })
+        }
+      }
+
+      if (error.response.data && typeof error.response.data === "object") {
+        return Promise.reject({
+          code: error.response.data.code || error.response.data.error_code || error.response.status,
+          message: error.response.data.message || error.response.statusText,
+          response: error.response,
+        })
+      }
     } else if (error.request) {
       console.error("[v0] Network Error - No response received:", {
         message: error.message,
@@ -124,7 +138,6 @@ apiClient.interceptors.response.use(
       corsError.name = "NetworkError"
       return Promise.reject(corsError)
     } else {
-      // Error in request setup
       console.error("[v0] Request Setup Error:", error.message)
     }
     return Promise.reject(error)

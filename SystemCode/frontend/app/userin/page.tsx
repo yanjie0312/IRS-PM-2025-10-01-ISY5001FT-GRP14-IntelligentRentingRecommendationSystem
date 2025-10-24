@@ -24,7 +24,6 @@ const FLAT_TYPES = ["HDB", "Condo", "Landed", "Apartment", "Executive Condo"]
 
 const FORM_DATA_KEY = "housefinder_form_data"
 const NLP_INPUT_KEY = "housefinder_nlp_input"
-// Define a constant for clearing select fields
 const CLEAR_SELECT_VALUE = "0"
 
 export default function UserInputPage() {
@@ -54,8 +53,6 @@ export default function UserInputPage() {
       const savedFormData = localStorage.getItem(FORM_DATA_KEY)
       if (savedFormData) {
         const parsed = JSON.parse(savedFormData)
-        // Ensure saved school_id is a number or 0, for the required field
-        // Set optional fields to undefined if they were null or 0, to match initial state logic
         setFormData({
           ...parsed,
           school_id: Number(parsed.school_id) || 0,
@@ -99,14 +96,12 @@ export default function UserInputPage() {
         ...formData,
         device_id: getDeviceId(),
       }
-      // Fixed: Use submitForm instead of submitDescription
       const response = await api.submitForm(submitData)
 
-      // Save form data for next time (optional)
       localStorage.setItem(FORM_DATA_KEY, JSON.stringify(formData))
 
-      // Store recommendations data for the recommendations page
       localStorage.setItem('recommendations_data', JSON.stringify(response.data))
+      localStorage.setItem('recommendations_source', 'submit')
 
       console.log('[v0] Stored recommendations in localStorage:', response.data)
       router.push("/recomm")
@@ -145,11 +140,10 @@ export default function UserInputPage() {
     try {
       const response = await api.submitDescription(nlpInput)
 
-      // Save NLP input for next time (optional)
       localStorage.setItem(NLP_INPUT_KEY, nlpInput)
 
-      // Store recommendations data for the recommendations page
       localStorage.setItem('recommendations_data', JSON.stringify(response.data))
+      localStorage.setItem('recommendations_source', 'submit')
 
       console.log('[v0] Stored recommendations in localStorage:', response.data)
       router.push("/recomm")
@@ -182,8 +176,6 @@ export default function UserInputPage() {
     }))
   }
 
-
-
   const handleOptionalSelectChange = (key: keyof FormData, value: string) => {
     setFormData((prev) => {
       const newValue = value === CLEAR_SELECT_VALUE ? undefined : Number(value)
@@ -194,12 +186,10 @@ export default function UserInputPage() {
     })
   }
 
-  // Helper function to convert number or undefined to string for Input value prop
   const numberToInputString = (value: number | undefined): string => {
     return value === undefined || value === 0 ? "" : String(value)
   }
 
-  // Centralized handler for optional number inputs
   const handleOptionalNumberChange = (key: keyof FormData, value: string) => {
     setFormData((prev) => {
       const numberValue = Number(value)
@@ -210,7 +200,6 @@ export default function UserInputPage() {
       }
     })
   }
-
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50/30 via-background to-blue-50/20 py-12 px-4">
@@ -326,7 +315,6 @@ export default function UserInputPage() {
                         Target District (Optional)
                       </Label>
                       <Select
-                        // Use the CLEAR_SELECT_VALUE if target_district_id is undefined
                         value={formData.target_district_id?.toString() || CLEAR_SELECT_VALUE}
                         onValueChange={(value) =>
                           handleOptionalSelectChange("target_district_id", value)
@@ -336,7 +324,6 @@ export default function UserInputPage() {
                           <SelectValue placeholder="Select district (optional)" />
                         </SelectTrigger>
                         <SelectContent>
-                          {/* Added 'Clear Selection' item at the top */}
                           <SelectItem value={CLEAR_SELECT_VALUE}>
                             No Preference / Clear Selection
                           </SelectItem>
@@ -357,7 +344,6 @@ export default function UserInputPage() {
                           id="school_limit"
                           type="number"
                           placeholder="e.g.: 30 (means 30 minutes)"
-                          // Use numberToInputString helper
                           value={numberToInputString(formData.max_school_limit)}
                           onChange={(e) =>
                             handleOptionalNumberChange("max_school_limit", e.target.value)
@@ -374,7 +360,6 @@ export default function UserInputPage() {
                           id="mrt_distance"
                           type="number"
                           placeholder="e.g.: 500"
-                          // Use numberToInputString helper
                           value={numberToInputString(formData.max_mrt_distance)}
                           onChange={(e) =>
                             handleOptionalNumberChange("max_mrt_distance", e.target.value)
@@ -532,4 +517,3 @@ export default function UserInputPage() {
     </div>
   )
 }
-

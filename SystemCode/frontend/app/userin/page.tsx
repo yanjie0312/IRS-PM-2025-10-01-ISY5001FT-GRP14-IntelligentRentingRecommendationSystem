@@ -46,7 +46,7 @@ export default function UserInputPage() {
 
   const [nlpInput, setNlpInput] = useState("")
   const [nlpError, setNlpError] = useState(false)
-  const [missingFields, setMissingFields] = useState<string[]>([]) 
+  const [missingFields, setMissingFields] = useState<string[]>([])
   const maxChars = 500
 
   useEffect(() => {
@@ -137,6 +137,7 @@ export default function UserInputPage() {
 
     setIsSubmitting(true)
     setNlpError(false)
+    setMissingFields([])
 
     try {
       const response = await api.submitDescription(getDeviceId(), nlpInput)
@@ -150,25 +151,6 @@ export default function UserInputPage() {
     } catch (error: any) {
       console.error("Failed to submit NLP input:", error)
 
-      if (error.code === 42201) {
-        console.log("[v0] Missing required fields:", error.missing_fields)
-        setNlpError(true)
-        setMissingFields(error.missing_fields || []) 
-        return
-      }
-
-      if (error.code === 42201) {
-        console.log("[v0] Missing required fields:", error.missing_fields)
-        setNlpError(true)
-
-        if (error.missing_fields && error.missing_fields.length > 0) {
-          alert(`Please include the following information: ${error.missing_fields.join(", ")}`)
-        } else {
-          alert(error.message || "Incomplete information, please ensure price range and target school are included")
-        }
-        return
-      }
-
       if (error.name === "NetworkError") {
         alert(
           "Unable to connect to the server. This appears to be a network or CORS issue. Please check:\n\n" +
@@ -178,6 +160,19 @@ export default function UserInputPage() {
           "Technical details: " +
           error.message
         )
+        return
+      }
+
+      if (error.code === 42201) {
+        console.log("[v0] Missing required fields:", error.missing_fields)
+        setNlpError(true)
+        setMissingFields(error.missing_fields || [])
+
+        if (error.missing_fields && error.missing_fields.length > 0) {
+          alert(`Please include the following information: ${error.missing_fields.join(", ")}`)
+        } else {
+          alert(error.message || "Incomplete information, please ensure price range and target school are included")
+        }
         return
       }
 

@@ -95,11 +95,15 @@ export default function RentBlock({ property }: RentBlockProps) {
           <div className="pt-2 border-t">
             <p className="text-xs text-muted-foreground mb-2">Nearby Facilities</p>
             <div className="flex flex-wrap gap-1">
-              {property.public_facilities.slice(0, 3).map((facility, index) => (
-                <Badge key={index} variant="outline" className="text-xs">
-                  {facility.name} ({facility.distance}m)
-                </Badge>
-              ))}
+              {property.public_facilities.slice(0, 3).map((facility, index) => {
+                const [name, distance] = Object.entries(facility)[0]
+
+                return (
+                  <Badge key={index} variant="outline" className="text-xs">
+                    {name} ({distance}m)
+                  </Badge>
+                )
+              })}
               {property.public_facilities.length > 3 && (
                 <Badge variant="outline" className="text-xs">
                   +{property.public_facilities.length - 3}
@@ -110,7 +114,7 @@ export default function RentBlock({ property }: RentBlockProps) {
         )}
 
         <div className="pt-2 border-t">
-          <p className="text-sm text-muted-foreground italic line-clamp-2">{property.recommend_reason}</p>
+          <p className="text-sm text-muted-foreground italic line-clamp-2">{property.recommand_reason}</p>
         </div>
       </CardContent>
 

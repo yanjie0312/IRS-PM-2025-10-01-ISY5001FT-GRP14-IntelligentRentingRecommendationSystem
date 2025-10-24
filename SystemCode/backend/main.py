@@ -17,7 +17,6 @@ async def lifespan(app: FastAPI):
     # Shutdown
     await app.state.async_openai_client.close()
 
-
 app = FastAPI(
     title="IRRS API",
     description="API for IntelligentRentingREcommendatinoSystem",
@@ -25,21 +24,16 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-#---------------------------联调---------------------------
-origins = [
-    "http://localhost:3000",      # React 开发服务器地址
-    "http://127.0.0.1:3000",     # 备用地址
-    # "https://your-production-domain.com" # 如果未来有生产环境域名，也加进来
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,         # 允许访问的源列表
-    allow_credentials=True,      # 支持发送 cookies
-    allow_methods=["*"],         # 允许所有请求方法 (GET, POST, PUT, etc.)
-    allow_headers=["*"],         # 允许所有请求头
+    allow_origins=[
+        "http://localhost:3000", 
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
-#---------------------------联调---------------------------
 
 app.include_router(property_router)
 

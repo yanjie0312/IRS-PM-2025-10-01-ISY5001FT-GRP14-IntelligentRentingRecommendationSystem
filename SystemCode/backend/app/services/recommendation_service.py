@@ -1,11 +1,8 @@
 from typing import List
-import os, sys
 
 from pydantic import ValidationError
-from sqlmodel.ext.asyncio.session import AsyncSession
-from app.models import EnquiryEntity, EnquiryForm, Property
+from app.models import EnquiryForm, Property
 
-# csgen
 from app.dataservice.sql_api.api_model import RequestInfo as reqinfo, ResultInfo as resinfo
 from app.dataservice.sql_api.api import fetchRecommendProperties_async
 

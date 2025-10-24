@@ -61,6 +61,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=450,
             latitude=Decimal("1.3176"),
             longitude=Decimal("103.8824"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="New development with great facilities, near MRT and amenities.",
         ),
         Property(
@@ -78,6 +93,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=350,
             latitude=Decimal("1.3312"),
             longitude=Decimal("103.8689"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Spacious layout with balcony, close to city and transportation.",
         ),
         Property(
@@ -95,6 +125,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=600,
             latitude=Decimal("1.3512"),
             longitude=Decimal("103.8387"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Family-friendly with good schools nearby, modern amenities.",
         ),
         Property(
@@ -112,6 +157,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=250,
             latitude=Decimal("1.2938"),
             longitude=Decimal("103.8054"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="High floor with city view, walking distance to MRT and mall.",
         ),
         Property(
@@ -129,6 +189,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=500,
             latitude=Decimal("1.3721"),
             longitude=Decimal("103.8932"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Affordable family living with pool and gym facilities.",
         ),
         Property(
@@ -146,6 +221,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=200,
             latitude=Decimal("1.3011"),
             longitude=Decimal("103.8552"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Luxury living in heart of city, integrated with mall and MRT.",
         ),
         Property(
@@ -163,6 +253,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=400,
             latitude=Decimal("1.3124"),
             longitude=Decimal("103.8398"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Premium location near Orchard Road, high-end finishes throughout.",
         ),
         Property(
@@ -180,6 +285,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=800,
             latitude=Decimal("1.2923"),
             longitude=Decimal("103.7756"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Close to science park and universities, great for professionals.",
         ),
         Property(
@@ -197,6 +317,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=350,
             latitude=Decimal("1.3156"),
             longitude=Decimal("103.7642"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Near NUS and good schools, modern design with quality finishes.",
         ),
         Property(
@@ -214,6 +349,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=280,
             latitude=Decimal("1.3247"),
             longitude=Decimal("103.8432"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Direct access to MRT station, convenient for city commute.",
         ),
         Property(
@@ -231,6 +381,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=420,
             latitude=Decimal("1.3198"),
             longitude=Decimal("103.8815"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Brand new development with smart home features.",
         ),
         Property(
@@ -248,6 +413,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=320,
             latitude=Decimal("1.2773"),
             longitude=Decimal("103.8451"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Luxury CBD living with panoramic city views.",
         ),
         Property(
@@ -265,6 +445,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=550,
             latitude=Decimal("1.3218"),
             longitude=Decimal("103.7684"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Large family units with multiple pools and facilities.",
         ),
         Property(
@@ -282,6 +477,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=380,
             latitude=Decimal("1.3364"),
             longitude=Decimal("103.8502"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Near Toa Payoh hub with all amenities within walking distance.",
         ),
         Property(
@@ -299,6 +509,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=450,
             latitude=Decimal("1.2992"),
             longitude=Decimal("103.8076"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Compact and efficient layout perfect for young professionals.",
         ),
         Property(
@@ -316,6 +541,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=700,
             latitude=Decimal("1.3628"),
             longitude=Decimal("103.7621"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Spacious family home near nature reserves, peaceful environment.",
         ),
         Property(
@@ -333,6 +573,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=250,
             latitude=Decimal("1.2789"),
             longitude=Decimal("103.8374"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Iconic architecture with stunning city skyline views.",
         ),
         Property(
@@ -350,6 +605,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=300,
             latitude=Decimal("1.3392"),
             longitude=Decimal("103.8715"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="Integrated development with direct MRT and mall access.",
         ),
         Property(
@@ -367,163 +637,21 @@ def create_mock_properties_with_explanations() -> List[Property]:
             distance_to_mrt=150,
             latitude=Decimal("1.3745"),
             longitude=Decimal("103.9552"),
+            public_facilities=[
+                {
+                    "name": "ABC Supermarket",
+                    "distance": 200
+                },
+                {
+                    "name": "Happy Shopping Mall",
+                    "distance": 500
+                },
+                {
+                    "name": "Sunny Park",
+                    "distance": 150
+                }
+            ],
+            facility_type="condo",
             recommand_reason="East coast living with sea breeze, integrated with MRT and mall.",
-        ),
-    ]
-
-
-def create_mock_properties_without_explanations_with_scores() -> List[Property]:
-    return [
-        Property(
-            property_id=104,
-            img_src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
-            name="Gem Residences (Toa Payoh)",
-            district="D12 Toa Payoh / Balestier",
-            price="1,480",
-            beds=3,
-            baths=2,
-            area=1050,
-            build_time="2020",
-            location="23 Toa Payoh Lor 4, 319512, D12 Toa Payoh / Balestier",
-            time_to_school=22,
-            distance_to_mrt=500,
-            latitude=Decimal("1.3512"),
-            longitude=Decimal("103.8387"),
-            costScore=0.8,
-            commuteScore=0.7,
-            neighborhoodScore=0.6,
-        ),
-        Property(
-            property_id=103,
-            img_src="https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
-            name="The Tre Ver",
-            district="D13 macpherson / potong pasir",
-            price="1,450",
-            beds=2,
-            baths=2,
-            area=710,
-            build_time="2019",
-            location="168 Potong Pasir Avenue 1, 350168, D13 macpherson / potong pasir",
-            time_to_school=15,
-            distance_to_mrt=350,
-            latitude=Decimal("1.3312"),
-            longitude=Decimal("103.8689"),
-            costScore=0.9,
-            commuteScore=0.9,
-            neighborhoodScore=0.7,
-        ),
-        Property(
-            property_id=105,
-            img_src="https://plus.unsplash.com/premium_photo-1674676471081-0236e34485fd?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
-            name="Stirling Residences",
-            district="D03 queenstown / tiong bahru",
-            price="1,500",
-            beds=2,
-            baths=2,
-            area=750,
-            build_time="2020",
-            location="2 Stirling Road, 148952, D03 queenstown / tiong bahru",
-            time_to_school=12,
-            distance_to_mrt=250,
-            latitude=Decimal("1.2938"),
-            longitude=Decimal("103.8054"),
-            costScore=0.6,
-            commuteScore=1.0,
-            neighborhoodScore=0.5,
-        ),
-        Property(
-            property_id=107,
-            img_src="https://media.istockphoto.com/id/2155899923/photo/well-furnished-bedroom-in-a-new-construction-home-in-encino-california.webp?a=1&b=1&s=612x612&w=0&k=20&c=LAoVG8V-fi2mfwMmAfHmd-ES2mtRyjee7Xa-OOS5MoA=",
-            name="Midtown Modern",
-            district="D07 beach road / bugis / rochor",
-            price="1,490",
-            beds=2,
-            baths=2,
-            area=780,
-            build_time="2022",
-            location="18 Tan Quee Lan Street, 188098, D07 beach road / bugis / rochor",
-            time_to_school=28,
-            distance_to_mrt=200,
-            latitude=Decimal("1.3011"),
-            longitude=Decimal("103.8552"),
-            costScore=0.7,
-            commuteScore=0.6,
-            neighborhoodScore=1.0,
-        ),
-        Property(
-            property_id=102,
-            img_src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
-            name="Parc Esta",
-            district="D14 eunos / geylang / paya lebar",
-            price="1,650",
-            beds=3,
-            baths=2,
-            area=980,
-            build_time="2019",
-            location="10 Sims Drive, 380010, D14 eunos / geylang / paya lebar",
-            time_to_school=18,
-            distance_to_mrt=450,
-            latitude=Decimal("1.3176"),
-            longitude=Decimal("103.8824"),
-            costScore=0.2,
-            commuteScore=0.9,
-            neighborhoodScore=0.8,
-        ),
-        Property(
-            property_id=106,
-            img_src="https://media.istockphoto.com/id/2159352100/photo/digitally-generated-image-of-old-style-bedroom-with-access-to-balcony.webp?a=1&b=1&s=612x612&w=0&k=20&c=vgblBzchRrnSO-0yRFc2EPBKiHQ_HJC9hh5Stmjj3ps=",
-            name="The Florence Residences",
-            district="D19 hougang / punggol / sengkang",
-            price="900",
-            beds=3,
-            baths=2,
-            area=920,
-            build_time="2021",
-            location="2 Hougang Avenue 7, 530002, D19 hougang / punggol / sengkang",
-            time_to_school=29,
-            distance_to_mrt=700,
-            latitude=Decimal("1.3721"),
-            longitude=Decimal("103.8932"),
-            costScore=1.0,
-            commuteScore=0.2,
-            neighborhoodScore=0.8,
-        ),
-        Property(
-            property_id=108,
-            img_src="https://images.unsplash.com/photo-1505692795793-20f543407193?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTZ8fGJlZHJvb218ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=900",
-            name="Kopar at Newton",
-            district="D09 orchard / river valley",
-            price="1,100",
-            beds=3,
-            baths=3,
-            area=1250,
-            build_time="2023",
-            location="8 Makeway Avenue, 228815, D09 orchard / river valley",
-            time_to_school=35,
-            distance_to_mrt=400,
-            latitude=Decimal("1.3124"),
-            longitude=Decimal("103.8398"),
-            costScore=0.9,
-            commuteScore=0.1,
-            neighborhoodScore=0.2,
-        ),
-        Property(
-            property_id=101,
-            img_src="https://images.unsplash.com/photo-1615874959474-d609969a20ed?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmVkcm9vbXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
-            name="The Sail @ Marina Bay",
-            district="D01 boat quay / raffles place",
-            price="5,500",
-            beds=2,
-            baths=2,
-            area=883,
-            build_time="2008",
-            location="6 Marina Boulevard, 018985, D01 boat quay / raffles place",
-            time_to_school=25,
-            distance_to_mrt=300,
-            latitude=Decimal("1.2798"),
-            longitude=Decimal("103.8545"),
-            costScore=0.1,
-            commuteScore=0.8,
-            neighborhoodScore=0.9,
         ),
     ]

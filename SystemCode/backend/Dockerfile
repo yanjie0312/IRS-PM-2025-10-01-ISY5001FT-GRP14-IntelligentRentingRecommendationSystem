@@ -10,5 +10,5 @@ COPY . .
 
 EXPOSE 8000
 
-# docker 本地跑在容器里需注释掉
+# Needs to be commented out when developing in containers
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

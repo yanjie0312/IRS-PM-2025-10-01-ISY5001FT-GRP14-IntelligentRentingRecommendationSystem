@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional, TYPE_CHECKING
 
-from sqlalchemy import ARRAY, JSON, Column, DateTime, String, func
+from sqlalchemy import ARRAY, Column, DateTime, String, func
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:

@@ -149,7 +149,7 @@ export default function UserInputPage() {
       router.push("/recomm")
     } catch (error: any) {
       console.error("Failed to submit NLP input:", error)
-      if (error.code === 40003) {
+      if (error.code === 42201) {
         setNlpError(true)
       }
       const errorMessage =
@@ -472,7 +472,7 @@ export default function UserInputPage() {
                       maxLength={maxChars}
                     />
                     <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>Please ensure price range and target school are included</span>
+                      <span>Missing necessary information: min_monthly_rent.</span>
                       <span className={nlpInput.length >= maxChars ? "text-red-500 font-medium" : ""}>
                         {nlpInput.length}/{maxChars}
                       </span>

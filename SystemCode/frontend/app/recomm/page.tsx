@@ -16,49 +16,57 @@ export default function RecommendationsPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    let isMounted = true
+
     const fetchRecommendations = async () => {
       try {
+        if (!isMounted) return
+
         setLoading(true)
         setError(null)
 
-        // Read from localStorage
         const savedData = localStorage.getItem('recommendations_data')
-        let data: RecommendationsResponse | null = null
+        const source = localStorage.getItem('recommendations_source')
 
-        if (savedData) {
-
+        if (savedData && source === 'submit') {
           try {
-            data = JSON.parse(savedData)
-            console.log("[v0] Loaded recommendations from localStorage.")
+            const data: RecommendationsResponse = JSON.parse(savedData)
+
+            if (!isMounted) return
+
+            if (data && data.properties && data.properties.length > 0) {
+              setProperties(data.properties)
+              setTotalCount(data.total_count || 0)
+              console.log("[v0] Loaded recommendations from localStorage (submit source)")
+            } else {
+              throw new Error("Invalid data structure in localStorage")
+            }
           } catch (e) {
-            console.warn("[v0] Failed to parse localStorage data, treating as missing.", e)
-            data = null
+            console.warn("[v0] Failed to parse localStorage data:", e)
+            if (!isMounted) return
+            setError("Failed to load saved recommendations")
+            setProperties([])
+            setTotalCount(0)
           }
-        }
-
-        if (data && data.properties && data.properties.length > 0) {
-
-          setProperties(data.properties || [])
-          setTotalCount(data.total_count || 0)
         } else {
-
-          console.log("[v0] No valid recommendations in localStorage, fetching default recommendations...")
+          console.log("[v0] No submit data found, fetching default recommendations...")
           const response = await api.getRecommendationsNoSubmit()
+
+          if (!isMounted) return
+
           const apiData = response.data
 
           if (apiData && apiData.properties) {
             setProperties(apiData.properties)
             setTotalCount(apiData.total_count)
           } else {
-
-            throw new Error("API returned no properties.")
+            throw new Error("API returned no properties")
           }
         }
       } catch (err: any) {
+        if (!isMounted) return
 
         console.error("[v0] Failed to fetch recommendations:", err)
-
-
         const errorMessage =
           err.message ||
           err.response?.data?.message ||
@@ -68,11 +76,17 @@ export default function RecommendationsPage() {
         setProperties([])
         setTotalCount(0)
       } finally {
-        setLoading(false)
+        if (isMounted) {
+          setLoading(false)
+        }
       }
     }
 
     fetchRecommendations()
+
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   if (loading) {

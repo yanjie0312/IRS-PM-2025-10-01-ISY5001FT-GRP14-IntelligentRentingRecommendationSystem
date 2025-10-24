@@ -6,13 +6,13 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.models import EnquiryEntity, EnquiryForm, Property
 
 # csgen
-# from dataservice.sql_api.api_model import RequestInfo as reqinfo, ResultInfo as resinfo
-# from dataservice.sql_api.api import fetchRecommendProperties_async
+from app.dataservice.sql_api.api_model import RequestInfo as reqinfo, ResultInfo as resinfo
+from app.dataservice.sql_api.api import fetchRecommendProperties_async
 
 
 # Get recommended property list (unsorted)
 async def fetchRecommendProperties(params: EnquiryForm) -> List[Property]:
-    return []
+    # return []
     try:
         req = reqinfo.model_validate(params.model_dump(), strict=False)
     except ValidationError as e:

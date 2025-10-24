@@ -37,6 +37,7 @@ async def submit_description(
     client: openai.AsyncOpenAI = Depends(get_async_openai_client),
     enquiry: EnquiryNL
 ):
+    print(f"============{enquiry.model_dump_json(indent=2)}============")
     if MOCK_MODE:
         return mock_data.create_mock_response()
     else:

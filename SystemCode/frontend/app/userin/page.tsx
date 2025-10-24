@@ -138,7 +138,7 @@ export default function UserInputPage() {
     setNlpError(false)
 
     try {
-      const response = await api.submitDescription(nlpInput)
+      const response = await api.submitDescription(getDeviceId(), nlpInput)
 
       localStorage.setItem(NLP_INPUT_KEY, nlpInput)
 

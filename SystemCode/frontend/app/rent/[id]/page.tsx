@@ -341,7 +341,7 @@ export default function RentDetailPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-muted-foreground leading-relaxed">
-                  {property.recommend_reason || "This property matches your requirements."}
+                  {property.recommand_reason || "This property matches your requirements."}
                 </p>
                 <Separator />
                 <div className="space-y-3">

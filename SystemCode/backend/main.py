@@ -33,9 +33,8 @@ def create_app() -> FastAPI:
 
         # 2) OpenAI 客户端（仅创建对象，不应发网络请求）
         try:
-            # 惰性导入 settings，避免顶层导入时的副作用
             from app.services.config import get_settings
-            from openai import AsyncOpenAI  # 更稳妥的导入方式
+            from openai import AsyncOpenAI
             s = get_settings()
             if getattr(s, "OPENAI_API_KEY", None):
                 app.state.async_openai_client = AsyncOpenAI(api_key=s.OPENAI_API_KEY)
@@ -61,6 +60,7 @@ def create_app() -> FastAPI:
 
     app = FastAPI(title="IRRS API", version="0.1.0", lifespan=lifespan)
 
+    # ------------------ CORS ------------------
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[
@@ -73,13 +73,18 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    # 路由惰性导入（确保路由文件没有模块级 DB 连接/查询）
+    # ------------------ 路由注册 ------------------
     try:
-        from app.routes.property import router as property_router
-        app.include_router(property_router)
+        # ✅ 导入 property 路由模块
+        from app.routes import property as property_routes
+
+        # ✅ 挂载所有 /api/v1/properties/** 接口
+        app.include_router(property_routes.router)
+        log.info("Property routes mounted successfully.")
     except Exception as e:
         log.exception("Router import failed (continuing startup): %s", e)
 
+    # ------------------ 基础探针 ------------------
     @app.get("/healthz")
     async def healthz():
         return {"ok": True}

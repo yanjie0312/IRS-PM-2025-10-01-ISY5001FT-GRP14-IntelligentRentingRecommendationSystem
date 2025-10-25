@@ -80,9 +80,9 @@ def create_app() -> FastAPI:
 
         # ✅ 挂载所有 /api/v1/properties/** 接口
         app.include_router(property_routes.router)
-        log.info("Property routes mounted successfully.")
+        log.info("✅ Property routes mounted successfully.")
     except Exception as e:
-        log.exception("Router import failed (continuing startup): %s", e)
+        log.exception("❌ Router import failed (continuing startup): %s", e)
 
     # ------------------ 基础探针 ------------------
     @app.get("/healthz")

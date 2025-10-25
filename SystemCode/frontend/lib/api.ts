@@ -2,7 +2,17 @@ import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios"
 import type Decimal from "decimal.js"
 import { convertPropertiesCoordinates } from "./utils/decimal"
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000/"
+// const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000/"
+
+function normalizeBase(raw?: string | null) {
+  if (!raw) return ""
+  return raw.replace(/\/+$/, "") // 去掉末尾斜杠
+}
+
+const API_BASE_URL =
+  normalizeBase(process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL) ||
+  (process.env.NODE_ENV === "development" ? "http://127.0.0.1:8000" : "")
+
 
 // Create axios instance with default configuration
 const apiClient: AxiosInstance = axios.create({

@@ -7,12 +7,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# （可改也可删）改为 8080，更贴近 Cloud Run，EXPOSE 仅文档作用
 EXPOSE 8080
 
-# 关键：用 Cloud Run 注入的 PORT（默认 8080）
-# CMD ["bash","-lc","uvicorn main:app --host 0.0.0.0 --port ${PORT}"]
-
-# CMD ["bash","-lc","uvicorn health_only:app --host 0.0.0.0 --port ${PORT} --log-level debug"]
-
-CMD ["bash","-lc","uvicorn main:app --host 0.0.0.0 --port ${PORT} --log-level debug"]
+# 用 --factory 调用 create_app，彻底规避导入期副作用问题
+CMD ["python","-c","import os,uvicorn; uvicorn.run('main:create_app', factory=True, host='0.0.0.0', port=int(os.getenv('PORT','8080')), log_level='debug')"]

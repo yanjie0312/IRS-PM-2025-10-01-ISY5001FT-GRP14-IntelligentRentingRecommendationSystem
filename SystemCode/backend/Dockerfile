@@ -3,12 +3,12 @@ FROM python:3.9
 WORKDIR /app
 
 COPY requirements.txt .
-
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 8000
+# （可改也可删）改为 8080，更贴近 Cloud Run，EXPOSE 仅文档作用
+EXPOSE 8080
 
-# Needs to be commented out when developing in containers
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# 关键：用 Cloud Run 注入的 PORT（默认 8080）
+CMD ["bash","-lc","uvicorn main:app --host 0.0.0.0 --port ${PORT}"]

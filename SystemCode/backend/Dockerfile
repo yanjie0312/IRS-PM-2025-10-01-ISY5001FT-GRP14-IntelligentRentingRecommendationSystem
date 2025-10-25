@@ -13,5 +13,6 @@ EXPOSE 8080
 # 关键：用 Cloud Run 注入的 PORT（默认 8080）
 # CMD ["bash","-lc","uvicorn main:app --host 0.0.0.0 --port ${PORT}"]
 
-CMD ["bash","-lc","uvicorn health_only:app --host 0.0.0.0 --port ${PORT} --log-level debug"]
+# CMD ["bash","-lc","uvicorn health_only:app --host 0.0.0.0 --port ${PORT} --log-level debug"]
 
+CMD ["bash","-lc","uvicorn main:app --host 0.0.0.0 --port ${PORT} --log-level debug"]

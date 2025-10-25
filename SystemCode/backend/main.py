@@ -6,6 +6,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database.config import create_db_and_tables
 from app.routes.property import router as property_router
+from app.services.config import get_settings  # 新写法，见第2步
+
 
 log = logging.getLogger("uvicorn.error")
 

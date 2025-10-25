@@ -79,7 +79,7 @@ export default function RentBlock({ property }: RentBlockProps) {
               <School className="h-3.5 w-3.5" />
               <span>To School</span>
             </div>
-            <p className="text-sm font-medium">{property.time_to_school}m</p>
+            <p className="text-sm font-medium">{property.time_to_school}min</p>
           </div>
 
           <div className="space-y-1">

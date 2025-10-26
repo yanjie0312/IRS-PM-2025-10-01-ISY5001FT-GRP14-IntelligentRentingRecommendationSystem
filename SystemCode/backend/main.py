@@ -33,7 +33,7 @@ def create_app() -> FastAPI:
 
         # 2) OpenAI 客户端（仅创建对象，不应发网络请求）
         try:
-            from app.services.config import get_settings
+            from app.config import get_settings
             from openai import AsyncOpenAI
             s = get_settings()
             if getattr(s, "OPENAI_API_KEY", None):

@@ -6,7 +6,8 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'https://irrsbackend-234550193243.asia-southeast1.run.app/api/:path*',
+        // 注意这里去掉一个 /api/
+        destination: 'https://irrsbackend-234550193243.asia-southeast1.run.app/:path*',
       },
     ];
   },

@@ -26,7 +26,7 @@ async def save_enquiry(
         print(f"Successfully saved enquiry {enquiry_entity.eid} to database.")
 
         # cache
-        if saved_entity and saved_entity.eid:
+        if saved_entity and saved_entity.eid and redis_client:
             try:
                 cache_key = f"enquiry:{enquiry_entity.eid}"
                 enquiry_json = enquiry_entity.model_dump_json()
@@ -35,7 +35,9 @@ async def save_enquiry(
 
             except RedisError as e:
                 print(f"Failed to cache enquiry {enquiry_entity.eid} to Redis. Error: {e}")
-        
+        elif not redis_client:
+            print("Redis client unavailable. Skipping enquiry cache.")
+
         else:
             print("Eid is missing. Cannot cache.")
     
@@ -73,7 +75,7 @@ async def save_recommendation(
         print(f"Successfully saved recommendation {recommendation.rid} for enquiry {eid} to database.")
 
         # cache
-        if saved_recommendation and saved_recommendation.rid:
+        if saved_recommendation and saved_recommendation.rid and redis_client:
             try:
                 cache_key = f"recommendation:{eid}"
                 recommendation_json = saved_recommendation.model_dump_json()
@@ -82,6 +84,8 @@ async def save_recommendation(
 
             except (RedisError, TypeError) as e:
                 print(f"Failed to cache recommendation object for enquiry {eid}. Error: {e}")
+        elif not redis_client:
+            print("Redis client unavailable. Skipping recommendation cache.")
 
         else:
             print("Rid missing. Cannot cache.")
